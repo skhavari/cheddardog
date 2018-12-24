@@ -1,6 +1,6 @@
 # cheddardog
 
-Download recent transactions from you financial institutions
+Download transactions from you financial institutions, save them in a json file
 
 ### Supports
 
