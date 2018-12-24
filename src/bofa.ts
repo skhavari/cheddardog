@@ -1,6 +1,6 @@
 import Account from './account';
 import { sleep, getDownloadDir, simpleLogin } from './utils';
-import { logTitle, logStart, logDone } from './logger';
+import { logTitle, logStart, logDone, logLine } from './logger';
 import shell from 'shelljs';
 import path from 'path';
 import fs from 'fs';
@@ -17,7 +17,9 @@ export default class BofA implements Account {
         logTitle('Fetching BofA Transactions');
         await this.removeOldTransactionFiles();
         await this.downloadTransactions(page);
-        return this.parseTransactions();
+        let txns = await this.parseTransactions();
+        logLine('');
+        return txns;
     }
 
     private async removeOldTransactionFiles() {

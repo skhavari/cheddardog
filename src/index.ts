@@ -3,27 +3,21 @@ import { logLine, logStart, logTitle, logDone } from './logger';
 import BofA from './bofa';
 import Amex from './amex';
 import Account from './account';
-import Transaction from './Transaction';
+import Transaction from './transaction';
+import AccountList from './accountlist';
 import fs from 'fs';
 import path from 'path';
 
 (async () => {
     logLine('');
     let { browser, page } = await init();
-    let accounts: Array<Account> = [new Amex(), new BofA()];
-    let transactions = new Map<Account, Transaction[]>();
-    for (var account of accounts) {
-        transactions.set(account, await account.getTransactions(page));
-        logLine('');
-    }
+
+    let list = new AccountList();
+    await list.load([new Amex(), new BofA()], page);
     await shutdown(browser);
 
     const outputFilename = path.join('./', 'txndb.json');
-    logTitle('Exporting data');
-    logStart(`saving transactions to ${outputFilename}`);
-    let stringMap = JSON.stringify([...transactions]);
-    fs.writeFileSync(outputFilename, stringMap);
-    logDone(`transactions saved to ${outputFilename}`);
+    list.save(outputFilename);
 })().catch(e => {
     logLine('');
     logLine(`❌ Error: ${e.message}`);

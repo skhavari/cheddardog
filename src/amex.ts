@@ -1,6 +1,6 @@
 import Account from './account';
 import { simpleLogin, sleep, getDownloadDir } from './utils';
-import { logTitle, logStart, logDone } from './logger';
+import { logTitle, logStart, logDone, logLine } from './logger';
 import Transaction from './transaction';
 import puppeteer from 'puppeteer';
 import path from 'path';
@@ -20,7 +20,9 @@ export default class Amex implements Account {
         logTitle('Fetching AMEX Transactions');
         await this.removeOldTransactionFiles();
         await this.downloadTransactions(page);
-        return this.parseTransactions();
+        let txns = await this.parseTransactions();
+        logLine('');
+        return txns;
     }
 
     private async removeOldTransactionFiles() {
