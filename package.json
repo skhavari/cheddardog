@@ -1,0 +1,32 @@
+{
+    "name": "cheddar-dog",
+    "version": "1.0.27",
+    "description": "fetch transactions from your financial institutions.  supports bofa (ca) and amex",
+    "main": "dist/index.mjs",
+    "scripts": {
+        "mjs": "tsc -d && npm run renamejs && npm run renamemap",
+        "cjs": "tsc -m commonjs",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node --experimental-modules --no-warnings dist/src/index.mjs",
+        "build": "npm run mjs",
+        "clean": "rm -rf ./dist",
+        "renamejs": "for old in dist/src/*.js; do mv $old dist/src/`basename $old .js`.mjs; done",
+        "renamemap": "for old in dist/src/*.js.map; do mv $old dist/src/`basename $old .js.map`.mjs.map; done"
+    },
+    "files": [
+        "dist"
+    ],
+    "types": "dist/index.d.ts",
+    "author": "Sam Khavari <skhavari@cs.stanford.edu>",
+    "license": "UNLICENSED",
+    "dependencies": {
+        "shelljs": "^0.8.3",
+        "puppeteer": "^1.11.0",
+        "csvtojson": "^2.0.8",
+        "get-cursor-position": "^1.0.5",
+        "@types/node": "^10.12.18",
+        "@types/shelljs": "^0.8.1",
+        "@types/csvtojson": "^1.1.5",
+        "@types/puppeteer": "^1.11.1"
+    }
+}
