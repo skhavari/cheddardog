@@ -1,6 +1,7 @@
 import Account from './account';
-import { simpleLogin, sleep, getDownloadDir } from './utils';
-import { logTitle, logStart, logDone, logLine } from './logger';
+import { sleep, getDownloadDir } from './utils';
+import browserUtil from './browserutil';
+import log from './logger';
 import Transaction from './transaction';
 import puppeteer from 'puppeteer';
 import path from 'path';
@@ -17,19 +18,19 @@ export default class Amex implements Account {
     public displayName = Amex.DISPLAY_NAME;
 
     public async getTransactions(page: puppeteer.Page): Promise<Transaction[]> {
-        logTitle('Fetching AMEX Transactions');
+        log.title('Fetching AMEX Transactions');
         await this.removeOldTransactionFiles();
         await this.downloadTransactions(page);
         let txns = await this.parseTransactions();
-        logLine('');
+        log.line('');
         return txns;
     }
 
     private async removeOldTransactionFiles() {
         const globName = path.join(getDownloadDir(), 'ofx*.csv');
-        logStart(`rm -rf ${globName}`);
+        log.start(`rm -rf ${globName}`);
         shell.rm('-rf', globName);
-        logDone(`rm -rf ${globName}`);
+        log.done(`rm -rf ${globName}`);
     }
 
     private async downloadTransactions(page: puppeteer.Page) {
@@ -48,7 +49,7 @@ export default class Amex implements Account {
             );
         }
 
-        await simpleLogin(
+        await browserUtil.simpleLogin(
             page,
             pageUrl,
             username,
@@ -59,42 +60,42 @@ export default class Amex implements Account {
         );
 
         const csvSelector = 'ul.side-nav li:last-child a';
-        logStart('opening csv download page');
+        log.start('opening csv download page');
         await Promise.all([
             await page.click(csvSelector, { delay: 100 }),
             await page.waitForNavigation({ waitUntil: 'networkidle2' })
         ]);
-        logDone('csv download page opened');
+        log.done('csv download page opened');
 
         const latestCheckboxSelector =
             'ul#download-list-0.stmtsList div:first-child li:first-child span';
         const oneBackCheckboxSelector =
             'ul#download-list-0.stmtsList div:first-child li:nth-child(2) span';
 
-        logStart('selecting date ranges');
+        log.start('selecting date ranges');
         await Promise.all([
             await page.click(latestCheckboxSelector, { delay: 100 }),
             await page.click(oneBackCheckboxSelector, { delay: 100 })
         ]);
-        logDone('date ranges selected');
+        log.done('date ranges selected');
 
         const downloadButtonSelector = 'button#downloadFormButton';
-        logStart('downloading transactions');
+        log.start('downloading transactions');
         await Promise.all([
             await page.click(downloadButtonSelector, { delay: 100 }),
             await sleep(5000)
         ]);
-        logDone('transactions downloaded');
+        log.done('transactions downloaded');
     }
 
     private async parseTransactions(): Promise<Transaction[]> {
-        logStart('reading statement');
+        log.start('reading statement');
         const filename = path.join(getDownloadDir(), 'ofx.csv');
         let fileContentsBuffer = fs.readFileSync(filename);
         let fileContents = fileContentsBuffer.toString();
-        logDone('statement loaded');
+        log.done('statement loaded');
 
-        logStart('parsing transactions');
+        log.start('parsing transactions');
         const csvConfig: Partial<CSVParseParam> = {
             noheader: true,
             headers: ['date', 'referenceno', 'amount', 'description', 'extra'],
@@ -103,7 +104,7 @@ export default class Amex implements Account {
         };
         let txns = await csvtojson(csvConfig).fromString(fileContents);
         txns = txns.map(t => new Transaction(t.date, t.description, t.amount));
-        logDone(`loaded ${txns.length} transactions`);
+        log.done(`loaded ${txns.length} transactions`);
         return txns;
     }
 }

@@ -1,6 +1,7 @@
 import Account from './account';
-import { sleep, getDownloadDir, simpleLogin } from './utils';
-import { logTitle, logStart, logDone, logLine } from './logger';
+import { sleep, getDownloadDir } from './utils';
+import browserUtil from './browserutil';
+import log from './logger';
 import shell from 'shelljs';
 import path from 'path';
 import fs from 'fs';
@@ -14,19 +15,19 @@ export default class BofA implements Account {
     public displayName = BofA.DISPLAY_NAME;
 
     public async getTransactions(page: puppeteer.Page): Promise<Transaction[]> {
-        logTitle('Fetching BofA Transactions');
+        log.title('Fetching BofA Transactions');
         await this.removeOldTransactionFiles();
         await this.downloadTransactions(page);
         let txns = await this.parseTransactions();
-        logLine('');
+        log.line('');
         return txns;
     }
 
     private async removeOldTransactionFiles() {
         const globName = path.join(getDownloadDir(), 'stmt*.csv');
-        logStart(`rm -rf ${globName}`);
+        log.start(`rm -rf ${globName}`);
         shell.rm('-rf', globName);
-        logDone(`rm -rf ${globName}`);
+        log.done(`rm -rf ${globName}`);
     }
 
     private async downloadTransactions(page: puppeteer.Page) {
@@ -45,7 +46,7 @@ export default class BofA implements Account {
             );
         }
 
-        await simpleLogin(
+        await browserUtil.simpleLogin(
             page,
             pageUrl,
             username,
@@ -55,7 +56,7 @@ export default class BofA implements Account {
             submitSelector
         );
 
-        logStart('navigating to account page');
+        log.start('navigating to account page');
         await Promise.all([
             await page.click('span.AccountName a'),
             await page.waitForSelector('a.export-trans-view', {
@@ -63,36 +64,36 @@ export default class BofA implements Account {
             }),
             await sleep(1000)
         ]);
-        logDone('account page loaded');
+        log.done('account page loaded');
 
-        logStart('opening download form');
+        log.start('opening download form');
         await Promise.all([
             await page.click('a.export-trans-view.download-upper'),
             await page.waitForSelector('form[name=transactionDownloadForm]', {
                 visible: true
             })
         ]);
-        logDone('download form opened');
+        log.done('download form opened');
 
-        logStart('selecting download file type');
+        log.start('selecting download file type');
         await page.select('#select_filetype', 'csv');
-        logDone('file type selected');
+        log.done('file type selected');
 
-        logStart('downloading transactions');
+        log.start('downloading transactions');
         Promise.all([await page.click('a.submit-download'), await sleep(2000)]);
-        logDone('download complete');
+        log.done('download complete');
     }
 
     private async parseTransactions(): Promise<Transaction[]> {
-        logStart('reading statement');
+        log.start('reading statement');
         const filename = path.join(getDownloadDir(), 'stmt.csv');
         let fileContentsBuffer = fs.readFileSync(filename);
         let fileContents = fileContentsBuffer.toString();
         let index = fileContents.indexOf('Date,Description,Amount,R');
         fileContents = fileContents.substring(index);
-        logDone('statement loaded');
+        log.done('statement loaded');
 
-        logStart('parsing transactions');
+        log.start('parsing transactions');
         const csvConfig: Partial<CSVParseParam> = {
             headers: ['date', 'description', 'amount', 'balance'],
             colParser: { date: (item: string) => new Date(item) },
@@ -100,7 +101,7 @@ export default class BofA implements Account {
         };
         let txns = await csvtojson(csvConfig).fromString(fileContents);
         txns = txns.map(t => new Transaction(t.date, t.description, t.amount));
-        logDone(`loaded ${txns.length} transactions`);
+        log.done(`loaded ${txns.length} transactions`);
         return txns;
     }
 }

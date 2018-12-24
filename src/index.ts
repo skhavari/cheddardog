@@ -1,26 +1,25 @@
-import { init, shutdown } from './browser';
-import { logLine, logStart, logTitle, logDone } from './logger';
+import browserUtil from './browserutil';
+import log from './logger';
 import BofA from './bofa';
 import Amex from './amex';
-import Account from './account';
-import Transaction from './transaction';
 import AccountList from './accountlist';
-import fs from 'fs';
 import path from 'path';
 
+const outputFilename = path.join('./', 'txndb.json');
+
 (async () => {
-    logLine('');
-    let { browser, page } = await init();
+    log.line('');
+    let browser = await browserUtil.newBrowser();
+    let page = await browserUtil.newPage(browser);
 
     let list = new AccountList();
     await list.load([new Amex(), new BofA()], page);
-    await shutdown(browser);
-
-    const outputFilename = path.join('./', 'txndb.json');
     list.save(outputFilename);
+
+    await browserUtil.shudown(browser);
 })().catch(e => {
-    logLine('');
-    logLine(`❌ Error: ${e.message}`);
-    logLine(`❌ ${e.stack}`);
+    log.line('');
+    log.line(`❌ Error: ${e.message}`);
+    log.line(`❌ ${e.stack}`);
     process.exit(-1);
 });

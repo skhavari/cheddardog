@@ -2,7 +2,7 @@ import Account from './account';
 import Transaction from './transaction';
 import puppeteer from 'puppeteer';
 import fs from 'fs';
-import { logTitle, logStart, logDone } from './logger';
+import log from './logger';
 
 type AccountToTransactions = Map<Account, Transaction[]>;
 
@@ -17,16 +17,18 @@ export default class AccountList {
     }
 
     public save(filename: string) {
-        logTitle('Exporting account list');
-        logStart(`saving account data to ${filename}`);
+        log.title('Exporting account list');
+        log.start(`saving account data to ${filename}`);
         let stringMap = JSON.stringify([...this.data]);
         fs.writeFileSync(filename, stringMap);
-        logDone(`account data save to ${filename}`);
+        log.done(`account data save to ${filename}`);
+        log.line('');
     }
 
     public static loadFromFile(filename: string): AccountList {
+        let jsonStr = fs.readFileSync(filename, { encoding: 'utf-8' });
         let list = new AccountList();
-        // hydrate from file
+        list.data = new Map(JSON.parse(jsonStr));
         return list;
     }
 }
