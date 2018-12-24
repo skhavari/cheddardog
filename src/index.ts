@@ -14,6 +14,7 @@ import path from 'path';
     let transactions = new Map<Account, Transaction[]>();
     for (var account of accounts) {
         transactions.set(account, await account.getTransactions(page));
+        logLine('');
     }
     await shutdown(browser);
 

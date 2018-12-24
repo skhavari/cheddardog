@@ -1,4 +1,4 @@
-# cheddarDog
+# cheddardog
 
 Download recent transactions from you financial institutions
 

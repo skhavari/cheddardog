@@ -31,7 +31,7 @@ export const logLine = (msg: string, replace: boolean = false) => {
     if (replace === true) {
         let row = getCursorPos().row;
         for (var i = 0; i <= lastNumLines + 1; i++) {
-            readline.cursorTo(process.stdout, 0, row - 1);
+            readline.cursorTo(process.stdout, 0, row - i);
             readline.clearLine(process.stdout, 0);
         }
     }
@@ -43,9 +43,9 @@ export const logTitle = (title: string) => {
 };
 
 export const logStart = (msg: string) => {
-    logLine(`  ⏳ ${msg}`);
+    logLine(`     ⏳ ${msg}`);
 };
 
 export const logDone = (msg: string) => {
-    logLine(`   ✔ ${msg}`, true);
+    logLine(`      ✔ ${msg}`, true);
 };

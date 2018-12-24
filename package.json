@@ -1,6 +1,6 @@
 {
-    "name": "cheddar-dog",
-    "version": "1.0.27",
+    "name": "cheddardog",
+    "version": "1.0.28",
     "description": "fetch transactions from your financial institutions.  supports bofa (ca) and amex",
     "main": "dist/index.mjs",
     "scripts": {
