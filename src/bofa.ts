@@ -96,7 +96,10 @@ export default class BofA implements Account {
         log.start('parsing transactions');
         const csvConfig: Partial<CSVParseParam> = {
             headers: ['date', 'description', 'amount', 'balance'],
-            colParser: { date: (item: string) => new Date(item) },
+            colParser: {
+                date: (item: string) => new Date(item),
+                amount: (item: string) => parseFloat(item)
+            },
             ignoreColumns: /balance/
         };
         let txns = await csvtojson(csvConfig).fromString(fileContents);

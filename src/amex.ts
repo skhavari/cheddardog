@@ -99,7 +99,10 @@ export default class Amex implements Account {
         const csvConfig: Partial<CSVParseParam> = {
             noheader: true,
             headers: ['date', 'referenceno', 'amount', 'description', 'extra'],
-            colParser: { date: (item: string) => new Date(item) },
+            colParser: {
+                date: (item: string) => new Date(item),
+                amount: (item: string) => parseFloat(item)
+            },
             ignoreColumns: /(referenceno|extra)/
         };
         let txns = await csvtojson(csvConfig).fromString(fileContents);

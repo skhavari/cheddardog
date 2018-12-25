@@ -6,6 +6,27 @@ import log from './logger';
 
 type AccountToTransactions = Map<Account, Transaction[]>;
 
+const customReviver = (
+    key: string,
+    value: any
+): string | Date | Transaction => {
+    if (typeof value === 'string' && key == '_date') {
+        return new Date(value);
+    }
+
+    if (
+        value &&
+        typeof value === 'object' &&
+        Reflect.has(value, '_date') &&
+        Reflect.has(value, '_description') &&
+        Reflect.has(value, '_amount')
+    ) {
+        let { _date, _description, _amount } = value;
+        return new Transaction(_date, _description, _amount);
+    }
+    return value;
+};
+
 export default class AccountList {
     private data: AccountToTransactions = new Map<Account, Transaction[]>();
 
@@ -14,6 +35,14 @@ export default class AccountList {
         for (var account of accounts) {
             this.data.set(account, await account.getTransactions(page));
         }
+    }
+
+    public getTransactions(): Transaction[] {
+        let temp: Array<Transaction[]> = [];
+        this.data.forEach(transactions => {
+            temp.push(transactions);
+        });
+        return ([] as Transaction[]).concat(...temp);
     }
 
     public save(filename: string) {
@@ -28,7 +57,7 @@ export default class AccountList {
     public static loadFromFile(filename: string): AccountList {
         let jsonStr = fs.readFileSync(filename, { encoding: 'utf-8' });
         let list = new AccountList();
-        list.data = new Map(JSON.parse(jsonStr));
+        list.data = new Map(JSON.parse(jsonStr, customReviver));
         return list;
     }
 }

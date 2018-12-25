@@ -1,6 +1,6 @@
 {
     "name": "cheddardog",
-    "version": "1.0.28",
+    "version": "2.0.23",
     "description": "fetch transactions from your financial institutions.  supports bofa (ca) and amex",
     "main": "dist/index.mjs",
     "scripts": {
@@ -8,6 +8,7 @@
         "cjs": "tsc -m commonjs",
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node --experimental-modules --no-warnings dist/src/index.mjs",
+        "send": "node --experimental-modules --no-warnings dist/src/sendreport.mjs",
         "build": "npm run mjs",
         "clean": "rm -rf ./dist",
         "renamejs": "for old in dist/src/*.js; do mv $old dist/src/`basename $old .js`.mjs; done",
@@ -20,13 +21,14 @@
     "author": "Sam Khavari <skhavari@cs.stanford.edu>",
     "license": "UNLICENSED",
     "dependencies": {
-        "shelljs": "^0.8.3",
-        "puppeteer": "^1.11.0",
+        "@sendgrid/mail": "^6.3.1",
+        "@types/csvtojson": "^1.1.5",
+        "@types/node": "^10.12.18",
+        "@types/puppeteer": "^1.11.1",
+        "@types/shelljs": "^0.8.1",
         "csvtojson": "^2.0.8",
         "get-cursor-position": "^1.0.5",
-        "@types/node": "^10.12.18",
-        "@types/shelljs": "^0.8.1",
-        "@types/csvtojson": "^1.1.5",
-        "@types/puppeteer": "^1.11.1"
+        "puppeteer": "^1.11.0",
+        "shelljs": "^0.8.3"
     }
 }
