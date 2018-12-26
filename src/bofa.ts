@@ -79,6 +79,25 @@ export default class BofA implements Account {
         await page.select('#select_filetype', 'csv');
         log.done('file type selected');
 
+        const startSelector = 'input#start-date';
+        const endSelector = 'input#end-date';
+
+        let d = new Date();
+        let end = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+        d.setMonth(d.getMonth() - 2);
+        let start = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+
+        log.start(`configuring custom date range ${start} to ${end}`);
+        await page.click('input#cust-date');
+        await page.focus(startSelector);
+        await sleep(2000);
+        await page.type(startSelector, start, { delay: 20 });
+
+        await page.focus(endSelector);
+        await sleep(2000);
+        await page.type(endSelector, end, { delay: 20 });
+        log.done(`custom date range ${start} to ${end} configured`);
+
         log.start('downloading transactions');
         Promise.all([await page.click('a.submit-download'), await sleep(2000)]);
         log.done('download complete');
