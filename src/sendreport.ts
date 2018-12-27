@@ -67,6 +67,7 @@ let tuples: Array<StringAndFilterPair> = [1, 7, 14, 28].map(
 );
 
 // compute the summary for each daysAgo block
+let transactions: Transaction[] = [];
 let summary: SpendSummary[] = [];
 new Map(tuples).forEach((filter, name) => {
     let filtered = txns.filter(filter);
@@ -74,8 +75,12 @@ new Map(tuples).forEach((filter, name) => {
         return sum + txn.amount;
     }, 0);
 
-    total = Math.abs(total);
+    if (name == '7') {
+        transactions = filtered;
+    }
+
     name = `${name} day${name === '1' ? '' : 's'}`;
+    total = Math.abs(total);
 
     summary.push({
         name,
@@ -132,7 +137,7 @@ const render = (isEmail: boolean) => {
         }
         .title {
             margin-top: 30px;
-            padding: 10px;
+            padding: 10px 10px 10px 0;
             text-align: left;
             color: white;
         }
@@ -149,6 +154,39 @@ const render = (isEmail: boolean) => {
             color: #4EA9DE;
             font-size: small;
         }
+        .transactions {
+            font-size: small;
+            line-height: 1.5rem;
+            min-width: 280px;
+            padding-top: 30px;
+        }
+        .transactions-title {
+            margin-top: 30px;
+            text-align: left;
+            color: white;
+            font-size: initial;
+            padding-bottom: 10px;
+        }
+        .transaction {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255,255,255,0.5);
+        }
+        .transactions .transaction td {
+            padding: 0 10px 0 10px;
+            line-height: 2rem;
+        }
+        .date {
+            white-space: nowrap;
+        }
+        .amount {
+            white-space: nowrap;
+            text-align: right;
+        }
+        .description {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         .footer {
             font-size: small;
             color: rgba(255, 255, 255, 0.1);
@@ -160,13 +198,24 @@ const render = (isEmail: boolean) => {
         .bottom-space {
             padding-bottom: 100px;
         }
+        .baller {
+            color: #F05151;
+            font-weight: bold;
+        }
+        .warning {
+            color: #F05151;
+        }
+        .danger {
+            color: #F77F00;
+        }
+        .good {
+            color: #25B16A;
+        }
         </style>
     </head>
     <body>
         <table width="100%" height="100%" class="page-container"><tr><td>
             <h2>Spending Summary</h2>
-            
-
             <table align="center"><tr><td>
             ${summary
                 .map(item => {
@@ -178,6 +227,38 @@ const render = (isEmail: boolean) => {
                     } transactions</td></tr></table>`;
                 })
                 .join('')}
+            </td></tr>
+            <tr><td>
+                <table class="transactions" align="center" cellpadding="0" cellspacing="0">
+                <tr><td class="transactions-title" colspan="3">Transactions</td></tr>
+                ${transactions
+                    .map(t => {
+                        const mo = t.date.getMonth() + 1;
+                        const day = t.date.getDate();
+                        const date = `${mo}-${day}`;
+                        const descr = `${t.description.slice(0, 15)}`;
+                        const amount = `${formatter.format(t.amount)}`;
+
+                        let c = '';
+
+                        if (t.amount <= -250) {
+                            c = 'baller';
+                        } else if (t.amount <= -100) {
+                            c = 'warning';
+                        } else if (t.amount <= -50) {
+                            c = 'danger';
+                        } else if (t.amount > 0) {
+                            c = 'good';
+                        }
+
+                        return `<tr class="transaction ${c}">
+                            <td class="date">${date}</td>
+                            <td class="description">${descr}</td>
+                        <td class="amount">${amount}</td>
+                        </tr>`;
+                    })
+                    .join('')}
+                </table>
             </td></tr>
             <tr><td class="footer top-space">Made with <img height="10px" src="${heartSrc}" /> by your hubby.</tr></td>
             <tr><td class="footer bottom-space">${new Date().toLocaleString()}</td></tr>

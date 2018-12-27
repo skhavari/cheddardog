@@ -12,4 +12,8 @@ export default class Transaction {
     get amount(): number {
         return this._amount;
     }
+
+    get description(): string {
+        return this._description;
+    }
 }
