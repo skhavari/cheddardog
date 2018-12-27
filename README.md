@@ -1,6 +1,6 @@
 # cheddardog
 
--   Download transactions from you financial institutions
+-   Download transactions from your financial institutions
 -   Save them in a json file
 -   Generate an html spending summary report
 -   Email the spending summary
