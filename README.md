@@ -2,8 +2,10 @@
 
 -   Download transactions from you financial institutions
 -   Save them in a json file
--   Generate an html report of recent transactions with stats
--   Email it to who should see it
+-   Generate an html spending summary report
+-   Email the spending summary
+
+![sample report](https://user-images.githubusercontent.com/4343866/50465377-cb542f80-094b-11e9-9821-20239ad9cc56.png)
 
 ### Supports
 
