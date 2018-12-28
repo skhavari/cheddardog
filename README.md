@@ -18,7 +18,7 @@
 -   Set AMEX_USER and AMEX_PW
 -   `npm install`
 -   `npm run build`
--   `npm start` to generate `./out/txndb.json`
+-   `npm run refresh` to generate `./out/txndb.json`
 
 Tip: [Use 1password cli](https://support.1password.com/command-line/#appendix-session-management) or [set env vars without saving to history](https://www.google.com/search?rlz=1C5CHFA_enUS806US806&ei=LiMhXJXKIa7L0PEPnIyQiAM&q=run+command+without+saving+to+history+bash+zsh&oq=run+command+without+saving+to+history+bash+zsh&gs_l=psy-ab.3..35i39.4591.4949..5221...0.0..0.90.418.5......0....1..gws-wiz.......0i71j35i304i39.TG68M-kDrp4)
 
@@ -26,9 +26,9 @@ Tip: [Use 1password cli](https://support.1password.com/command-line/#appendix-se
 
 -   Set SENDGRID_API_KEY
 -   Set SEND_TO and SEND_FROM
--   npm run send to generate `./out/index.html` and have it emailed
+-   `npm run send` to generate `./out/index.html` and have it emailed
 
-To make this easy consider something like this in a `.zshrc` file
+To simplify repetitive execution, consider something like this in a `.zshrc` file
 
 ```
 cheddardog() {
@@ -50,7 +50,6 @@ cheddardog() {
 ### Basic design
 
 ![design](https://user-images.githubusercontent.com/4343866/50530005-6e24bf00-0aae-11e9-88de-43332dd7da21.png)
-
 
 ### Donate
 
