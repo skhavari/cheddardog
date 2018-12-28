@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'fs';
 import csvtojson from 'csvtojson';
 import Transaction from './transaction';
-import AccountInfo from './accountinfo';
+import Ledger from './ledger';
 import puppeteer from 'puppeteer';
 import { CSVParseParam } from 'csvtojson/v2/Parameters';
 
@@ -15,14 +15,14 @@ export default class BofA implements Account {
     private static DISPLAY_NAME = 'Bank of America';
     public displayName = BofA.DISPLAY_NAME;
 
-    public async getAccountInfo(page: puppeteer.Page): Promise<AccountInfo> {
+    public async getLedger(page: puppeteer.Page): Promise<Ledger> {
         log.title('Fetching BofA Transactions');
         await this.removeOldTransactionFiles();
         await this.login(page);
         await this.downloadTransactions(page);
-        let accountInfo = await this.parseTransactions();
+        let ledger = await this.parseTransactions();
         log.line('');
-        return accountInfo;
+        return ledger;
     }
 
     private async removeOldTransactionFiles(): Promise<void> {
@@ -107,7 +107,7 @@ export default class BofA implements Account {
         log.done('download complete');
     }
 
-    private async parseTransactions(): Promise<AccountInfo> {
+    private async parseTransactions(): Promise<Ledger> {
         log.start('reading statement');
         const filename = path.join(getDownloadDir(), 'stmt.csv');
         let fileContentsBuffer = fs.readFileSync(filename);
@@ -140,6 +140,6 @@ export default class BofA implements Account {
         );
         log.done(`loaded ${txns.length} transactions`);
 
-        return new AccountInfo(balance, txns);
+        return new Ledger(balance, txns);
     }
 }

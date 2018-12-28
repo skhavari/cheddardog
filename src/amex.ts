@@ -3,7 +3,7 @@ import { sleep, getDownloadDir } from './utils';
 import browserUtil from './browserutil';
 import log from './logger';
 import Transaction from './transaction';
-import AccountInfo from './accountinfo';
+import Ledger from './ledger';
 import puppeteer from 'puppeteer';
 import path from 'path';
 import shell from 'shelljs';
@@ -18,14 +18,14 @@ export default class Amex implements Account {
     private static DISPLAY_NAME = 'American Express';
     public displayName = Amex.DISPLAY_NAME;
 
-    public async getAccountInfo(page: puppeteer.Page): Promise<AccountInfo> {
+    public async getLedger(page: puppeteer.Page): Promise<Ledger> {
         log.title('Fetching AMEX Transactions');
         await this.removeOldTransactionFiles();
         await this.downloadTransactions(page);
         let txns = await this.parseTransactions();
-        let balance = await this.getBalance();
+        let balance = await this.getBalance(page);
         log.line('');
-        return new AccountInfo(balance, txns);
+        return new Ledger(balance, txns);
     }
 
     private async removeOldTransactionFiles() {
@@ -116,8 +116,22 @@ export default class Amex implements Account {
         return txns;
     }
 
-    private async getBalance(): Promise<number> {
-        //TODO: implelent this
-        return 0;
+    private async getBalance(page: puppeteer.Page): Promise<number> {
+        let homeSelector = 'ul#iNavMenu li:first-child a';
+        log.start('navigating to dashboard');
+        await Promise.all([
+            await page.click(homeSelector, { delay: 0 }),
+            await sleep(5000)
+        ]);
+        log.done('dashboard loaded');
+
+        log.start('extracting balance');
+        let elSelector = 'div.line-item div.data-value div.heading-5';
+        let balanceStr = await page.$eval(elSelector, el => el.textContent);
+        balanceStr = balanceStr || '';
+        let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));
+        log.done('balance loaded');
+
+        return balance;
     }
 }

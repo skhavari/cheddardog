@@ -1,24 +1,23 @@
 import Account from './account';
 import Transaction from './transaction';
-import AccountInfo from './accountinfo';
+import Ledger from './ledger';
 import puppeteer from 'puppeteer';
 import fs from 'fs';
 import log from './logger';
 import AccountRegistry from './accountregistry';
 
-type AccountToTransactions = Map<Account, AccountInfo>;
+type AccountToLedger = Map<Account, Ledger>;
 
 // TODO: move serialization into each class via toJSON / fromJSON
 const customReviver = (
     key: string,
     value: any
-): string | Date | Transaction | AccountInfo | Account => {
+): string | Date | Transaction | Ledger | Account => {
     // make dates Dates
     if (typeof value === 'string' && key == '_date') {
         return new Date(value);
     }
 
-    // make Transactions
     if (
         value &&
         typeof value === 'object' &&
@@ -30,7 +29,6 @@ const customReviver = (
         return new Transaction(_date, _description, _amount);
     }
 
-    // make AccountInfos
     if (
         value &&
         typeof value === 'object' &&
@@ -38,35 +36,34 @@ const customReviver = (
         Reflect.has(value, 'transactions')
     ) {
         let { balance, transactions } = value;
-        return new AccountInfo(balance, transactions);
+        return new Ledger(balance, transactions);
     }
 
-    // make Accounts
     if (
         value &&
         typeof value === 'object' &&
         Reflect.has(value, 'displayName')
     ) {
-        return AccountRegistry.newAccountFromString(value.displayName);
+        return AccountRegistry.newAccountFromName(value.displayName);
     }
 
     return value;
 };
 
-// TODO: better name
+// TODO: better name and abstraction
 export default class AccountList {
-    private data: AccountToTransactions = new Map<Account, AccountInfo>();
+    private data: AccountToLedger = new Map<Account, Ledger>();
 
     public async refreshData(accounts: Account[], page: puppeteer.Page) {
-        this.data = new Map<Account, AccountInfo>();
+        this.data = new Map<Account, Ledger>();
         for (var account of accounts) {
-            this.data.set(account, await account.getAccountInfo(page));
+            this.data.set(account, await account.getLedger(page));
         }
     }
 
     public get transactions(): Transaction[] {
-        let infos: AccountInfo[] = Array.from(this.data.values());
-        let temp: Array<Transaction[]> = infos.map(
+        let ledgers: Ledger[] = Array.from(this.data.values());
+        let temp: Array<Transaction[]> = ledgers.map(
             accountInfo => accountInfo.transactions
         );
         return ([] as Transaction[]).concat(...temp);

@@ -1,9 +1,9 @@
 import Transaction from './transaction';
 
 /**
- *  All account information - currently balance and transactions
+ *  A balance and array of transactions for accounts
  */
-export default class AccountInfo {
+export default class Ledger {
     constructor(
         public balance: number = 0,
         public transactions: Transaction[] = []

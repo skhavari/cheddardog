@@ -10,7 +10,7 @@ let nameToAccount = registry.reduce((prev, curr) => {
 }, new Map<string, Account>());
 
 export default class AccountRegistry {
-    static newAccountFromString(accountName: string): Account {
+    static newAccountFromName(accountName: string): Account {
         let result = nameToAccount.get(accountName);
         if (result === undefined) {
             throw new Error(`Unknown account name: ${accountName}`);
