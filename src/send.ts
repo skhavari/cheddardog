@@ -1,9 +1,10 @@
-import { AccountList, Transaction } from './account';
+import { Account, Ledger, Transaction } from './account';
+import { Store } from './store';
 import path from 'path';
 import fs from 'fs';
 import sendgrid from '@sendgrid/mail';
 import { log } from './util';
-import render from './reports/render';
+import render from './report/render';
 import shell from 'shelljs';
 
 const filename = path.join('./out/', 'txndb.json');
@@ -43,12 +44,15 @@ log.title('Sending latest report');
 
 // load the transaction list from file
 log.start(`loading transactions from ${filename}`);
-let list: AccountList = AccountList.loadFromFile(filename);
+let list: Map<Account, Ledger> = Store.load(filename);
 log.done(`transactions loaded from ${filename}`);
 
 // sort by date, descending
 log.start('generating summary');
-let txns: Transaction[] = list.transactions.sort((a, b) => {
+let ledgers: Ledger[] = Array.from(list.values());
+let temp: Array<Transaction[]> = ledgers.map(ledger => ledger.transactions);
+let allTransactions: Transaction[] = ([] as Transaction[]).concat(...temp);
+let txns: Transaction[] = allTransactions.sort((a, b) => {
     return b.date.getTime() - a.date.getTime();
 });
 
