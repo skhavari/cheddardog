@@ -1,0 +1,101 @@
+html,
+body {
+    font-family: 'Verdana';
+    background-color: #1b3a4a;
+    color: white;
+    padding: 0;
+    margin: 0;
+}
+.page-container {
+    font-family: 'Verdana';
+    background-color: #1b3a4a;
+    color: white;
+    padding: 0;
+    margin: 0;
+}
+h2 {
+    text-align: center;
+}
+.summary {
+    text-align: center;
+    width: 100%;
+    padding: 0;
+    border-spacing: 0;
+    margin-top: 30px;
+}
+.title {
+    margin-top: 30px;
+    padding: 10px 10px 10px 0;
+    text-align: left;
+    color: white;
+}
+.total {
+    text-align: center;
+    color: #f05151;
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: xx-large;
+    padding: 25px;
+}
+.count {
+    padding: 5px;
+    text-align: right;
+    color: #4ea9de;
+    font-size: small;
+}
+.transactions {
+    font-size: small;
+    line-height: 1.5rem;
+    min-width: 280px;
+    padding-top: 30px;
+}
+.transactions-title {
+    margin-top: 30px;
+    text-align: left;
+    color: white;
+    font-size: initial;
+    padding-bottom: 10px;
+}
+.transaction {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+}
+.transactions .transaction td {
+    padding: 0 10px 0 10px;
+    line-height: 2rem;
+}
+.date {
+    white-space: nowrap;
+}
+.amount {
+    white-space: nowrap;
+    text-align: right;
+}
+.description {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.footer {
+    font-size: small;
+    color: rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+.top-space {
+    padding-top: 100px;
+}
+.bottom-space {
+    padding-bottom: 100px;
+}
+.baller {
+    color: #f05151;
+    font-weight: bold;
+}
+.warning {
+    color: #f05151;
+}
+.danger {
+    color: #f77f00;
+}
+.good {
+    color: #25b16a;
+}
