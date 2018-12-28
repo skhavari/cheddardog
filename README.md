@@ -47,6 +47,11 @@ cheddardog() {
 
 -   Only works on Mac OS (download dir is hardcoded, not tested on other platforms)
 
+### Basic design
+
+![design](https://user-images.githubusercontent.com/4343866/50530005-6e24bf00-0aae-11e9-88de-43332dd7da21.png)
+
+
 ### Donate
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUWGTGEM9TDPG&source=url)
