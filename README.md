@@ -4,6 +4,7 @@
 -   Save them in a json file
 -   Generate an html spending summary report
 -   Email the spending summary
+-   Why? Financial insights without spraying your data to third parties.
 
 ![sample report](https://user-images.githubusercontent.com/4343866/50465377-cb542f80-094b-11e9-9821-20239ad9cc56.png)
 
@@ -12,7 +13,7 @@
 -   Bank of America (CA)
 -   American Express
 
-### Download Transactions
+### Download Ledger from Financial Institutions
 
 -   Set BOFA_USER and BOFA_PW
 -   Set AMEX_USER and AMEX_PW
