@@ -1,7 +1,5 @@
 import Account from './account';
-import { sleep, getDownloadDir } from './utils';
-import browserUtil from './browserutil';
-import log from './logger';
+import { BrowserUtil, log, sleep, getDownloadDir } from '../util';
 import shell from 'shelljs';
 import path from 'path';
 import fs from 'fs';
@@ -48,7 +46,7 @@ export default class BofA implements Account {
             );
         }
 
-        await browserUtil.simpleLogin(
+        await BrowserUtil.simpleLogin(
             page,
             pageUrl,
             username,

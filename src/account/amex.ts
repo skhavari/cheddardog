@@ -1,7 +1,5 @@
 import Account from './account';
-import { sleep, getDownloadDir } from './utils';
-import browserUtil from './browserutil';
-import log from './logger';
+import { BrowserUtil, log, sleep, getDownloadDir } from '../util';
 import Transaction from './transaction';
 import Ledger from './ledger';
 import puppeteer from 'puppeteer';
@@ -51,7 +49,7 @@ export default class Amex implements Account {
             );
         }
 
-        await browserUtil.simpleLogin(
+        await BrowserUtil.simpleLogin(
             page,
             pageUrl,
             username,

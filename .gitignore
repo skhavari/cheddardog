@@ -18,5 +18,4 @@ typings/
 dist
 
 # output files
-txndb.json
-index.html
+out/

@@ -1,12 +1,12 @@
-import AccountList from './accountlist';
+import { AccountList, Transaction } from './account';
 import path from 'path';
-import Transaction from './transaction';
 import fs from 'fs';
 import sendgrid from '@sendgrid/mail';
-import log from './logger';
-import renderReport from './genreport';
+import { log } from './util';
+import render from './reports/render';
+import shell from 'shelljs';
 
-const filename = path.join('./', 'txndb.json');
+const filename = path.join('./out/', 'txndb.json');
 
 // a date range
 interface Range {
@@ -90,11 +90,12 @@ const subject = `Spending Report ${now.toISOString().split('T')[0]}`;
 const base64Heart =
     'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAARuAAAEbgHQo7JoAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAIdQTFRF////v0BAzGYz21tJ21VJ1VVK1lxH1lpM2FxI1lxN11pL2FhK11lM2FpL1lpL1llK2VtJ11lJ11pL11lK2FtJ1lpL11tJ11tK2FlL2FlK1lpL11lK11pL11pK11pL11pK11pK11pK11pJ11pK11pK2FpK11pK11pK11pK11pK11pK11pK11pKd2pgRQAAACx0Uk5TAAQFDhUYGSUnMjM0OUFERUlNUlliY3N5e4mW0NTa29/g6ezt7u/x8vb4/P0b22PaAAAAdUlEQVQYGVXBiRZCUABF0UM00KBRCQ0kve7/f1/Isry9ASdcuzTcTejQCHKpOMPlJeUB+KVa+5NapU+iTm3USchkyShkKUhlSYllifEqjVQeREYDE9E4ftUzBzq7jzr1lt7qrcZzyWDxkO5zRma36xTLdMLfD2jjGviUaqLTAAAAAElFTkSuQmCC';
 
-const fileHtml = renderReport(false, subject, summary, transactions, formatter);
-const emailHtml = renderReport(true, subject, summary, transactions, formatter);
+const fileHtml = render(false, subject, summary, transactions, formatter);
+const emailHtml = render(true, subject, summary, transactions, formatter);
 
-const ofilename = './index.html';
+const ofilename = './out/index.html';
 log.start(`saving report to ${ofilename}`);
+shell.mkdir('-p', './out');
 fs.writeFileSync(ofilename, fileHtml);
 log.done(`report saved to ${ofilename}`);
 

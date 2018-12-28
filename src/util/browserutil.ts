@@ -1,6 +1,6 @@
 import log from './logger';
 import puppeteer from 'puppeteer';
-import packageInfo from '../package.json';
+import packageInfo from '../../package.json';
 
 const launchParams = {
     headless: false,

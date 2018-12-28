@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "refresh-accounts",
-            "program": "${workspaceFolder}/dist/src/index.js",
+            "program": "${workspaceFolder}/dist/src/refresh.js",
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
             "sourceMaps": true,
             "outputCapture": "std"
@@ -16,8 +16,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "generate-report",
-            "program": "${workspaceFolder}/dist/src/sendreport.js",
+            "name": "send-report",
+            "program": "${workspaceFolder}/dist/src/send.js",
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
             "sourceMaps": true,
             "outputCapture": "std"

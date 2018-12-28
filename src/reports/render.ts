@@ -1,5 +1,5 @@
 import fs from 'fs';
-import Transaction from './transaction';
+import { Transaction } from '../account';
 import { minify } from 'html-minifier';
 
 const CSS_FILENAME = './src/styles.css';

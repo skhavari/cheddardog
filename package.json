@@ -2,21 +2,16 @@
     "name": "cheddardog",
     "version": "2.0.47",
     "description": "fetch transactions from your financial institutions, like bofa and amex, then generate & email summary reports.",
-    "main": "dist/src/index.js",
+    "main": "dist/src/refresh.js",
     "scripts": {
         "build": "tsc -m commonjs",
         "clean": "rm -rf ./dist",
-        "clean-db": "rm -f ./txndb.json",
-        "clean-report": "rm -f ./index.html",
+        "clean-data": "rm -rf ./out",
         "clean-node-modules": "rm -rf node_modules",
-        "clean-all": "npm run clean && npm run clean-db && npm run clean-report && npm run clean-node-modules",
-        "start": "node dist/src/index.js",
-        "refresh": "npm run start",
-        "send": "node dist/src/sendreport.js"
+        "clean-all": "npm run clean && npm run clean-data && npm run clean-node-modules",
+        "refresh": "node dist/src/refresh.js",
+        "send": "node dist/src/send.js"
     },
-    "files": [
-        "dist"
-    ],
     "types": "dist/src/index.d.ts",
     "author": "Sam Khavari <skhavari@cs.stanford.edu>",
     "license": "UNLICENSED",

@@ -3,7 +3,7 @@ import Transaction from './transaction';
 import Ledger from './ledger';
 import puppeteer from 'puppeteer';
 import fs from 'fs';
-import log from './logger';
+import { log } from '../util';
 import AccountRegistry from './accountregistry';
 
 type AccountToLedger = Map<Account, Ledger>;

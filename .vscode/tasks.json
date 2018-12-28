@@ -13,27 +13,21 @@
             }
         },
         {
-            "label": "clean all",
-            "type": "npm",
-            "script": "clean-all",
-            "problemMatcher": []
-        },
-        {
             "label": "clean build output",
             "type": "npm",
             "script": "clean",
             "problemMatcher": []
         },
         {
-            "label": "clean txndb.json",
+            "label": "clean data",
             "type": "npm",
-            "script": "clean-db",
+            "script": "clean-data",
             "problemMatcher": []
         },
         {
-            "label": "clean generated report",
+            "label": "clean all",
             "type": "npm",
-            "script": "clean-report",
+            "script": "clean-all",
             "problemMatcher": []
         },
         {
@@ -43,27 +37,21 @@
             "problemMatcher": []
         },
         {
+            "label": "clean node modules",
+            "type": "npm",
+            "script": "clean-node-modules",
+            "problemMatcher": []
+        },
+        {
             "label": "refresh accounts",
             "type": "npm",
             "script": "refresh",
             "problemMatcher": []
         },
         {
-            "label": "generate & send report",
+            "label": "send report",
             "type": "npm",
             "script": "send",
-            "problemMatcher": []
-        },
-        {
-            "label": "generate & send report",
-            "type": "npm",
-            "script": "start",
-            "problemMatcher": []
-        },
-        {
-            "label": "clean node modules",
-            "type": "npm",
-            "script": "clean-node-modules",
             "problemMatcher": []
         }
     ]
