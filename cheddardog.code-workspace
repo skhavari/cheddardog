@@ -5,7 +5,7 @@
         }
     ],
     "settings": {
-        "npm.exclude": "dist/**",
+        "npm.exclude": "**/dist",
         "typescript.tsc.autoDetect": "off"
     }
 }

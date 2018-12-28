@@ -9,6 +9,8 @@ export default class Refresher {
         for (var account of accounts) {
             data.set(account, await account.getLedger(page));
         }
+
+        await browser.close();
         return data;
     }
 }
