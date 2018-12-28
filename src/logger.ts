@@ -1,13 +1,13 @@
 import pos from 'get-cursor-position';
 import readline from 'readline';
 
-const getCursorPos = () => pos.sync();
-const hideCursor = () => process.stdout.write('\u001b[?25l');
-const showCursor = () => process.stdout.write('\u001b[?25h');
-
-hideCursor();
-process.on('beforeExit', showCursor);
-process.on('SIGINT', showCursor);
+if (process.stdout.isTTY) {
+    // hide cursor
+    process.stdout.write('\u001b[?25l');
+    // show cursor
+    process.on('beforeExit', () => process.stdout.write('\u001b[?25h'));
+    process.on('SIGINT', () => process.stdout.write('\u001b[?25h'));
+}
 
 const isNewLine = (x: string) => x === '\n';
 const numLines = (str: string): number =>
@@ -16,13 +16,15 @@ const numLines = (str: string): number =>
 export default class Log {
     static lastNumLines = 0;
     static log(msg: string) {
-        Log.lastNumLines = numLines(msg);
+        if (process.stdout.isTTY) {
+            Log.lastNumLines = numLines(msg);
+        }
         process.stdout.write(`${msg}`);
     }
 
     static line(msg: string, replace: boolean = false) {
-        if (replace === true) {
-            let row = getCursorPos().row;
+        if (replace === true && process.stdout.isTTY) {
+            let row = pos.sync().row;
             for (var i = 0; i <= Log.lastNumLines + 1; i++) {
                 readline.cursorTo(process.stdout, 0, row - i);
                 readline.clearLine(process.stdout, 0);

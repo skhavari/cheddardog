@@ -1,0 +1,11 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "npm.exclude": "dist/**",
+        "typescript.tsc.autoDetect": "off"
+    }
+}

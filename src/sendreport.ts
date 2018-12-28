@@ -53,11 +53,9 @@ log.done(`transactions loaded from ${filename}`);
 
 // sort by date, descending
 log.start('generating summary');
-let txns: Transaction[] = list
-    .getTransactions()
-    .sort((a: Transaction, b: Transaction) => {
-        return b.date.getTime() - a.date.getTime();
-    });
+let txns: Transaction[] = list.transactions.sort((a, b) => {
+    return b.date.getTime() - a.date.getTime();
+});
 
 // create an array of daysAgo, filters pairs, to intialize a map
 let tuples: Array<StringAndFilterPair> = [1, 7, 14, 28].map(
@@ -102,6 +100,8 @@ const render = (isEmail: boolean) => {
         ? 'cid:lovecid'
         : `data:image/png;base64,${base64Heart}`;
 
+    //TODO: clean this up, move css to its own file, yank out summary table and transaction table
+    //TODO: per account info: balances, spend per account
     return `
 <!DOCTYPE html>
 <html lang="en">

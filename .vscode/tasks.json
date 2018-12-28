@@ -1,0 +1,70 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "npm",
+            "script": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "clean all",
+            "type": "npm",
+            "script": "clean-all",
+            "problemMatcher": []
+        },
+        {
+            "label": "clean build output",
+            "type": "npm",
+            "script": "clean",
+            "problemMatcher": []
+        },
+        {
+            "label": "clean txndb.json",
+            "type": "npm",
+            "script": "clean-db",
+            "problemMatcher": []
+        },
+        {
+            "label": "clean generated report",
+            "type": "npm",
+            "script": "clean-report",
+            "problemMatcher": []
+        },
+        {
+            "label": "npm install",
+            "type": "npm",
+            "script": "install",
+            "problemMatcher": []
+        },
+        {
+            "label": "refresh accounts",
+            "type": "npm",
+            "script": "refresh",
+            "problemMatcher": []
+        },
+        {
+            "label": "generate & send report",
+            "type": "npm",
+            "script": "send",
+            "problemMatcher": []
+        },
+        {
+            "label": "generate & send report",
+            "type": "npm",
+            "script": "start",
+            "problemMatcher": []
+        },
+        {
+            "label": "clean node modules",
+            "type": "npm",
+            "script": "clean-node-modules",
+            "problemMatcher": []
+        }
+    ]
+}

@@ -3,6 +3,7 @@ import { sleep, getDownloadDir } from './utils';
 import browserUtil from './browserutil';
 import log from './logger';
 import Transaction from './transaction';
+import AccountInfo from './accountinfo';
 import puppeteer from 'puppeteer';
 import path from 'path';
 import shell from 'shelljs';
@@ -17,13 +18,14 @@ export default class Amex implements Account {
     private static DISPLAY_NAME = 'American Express';
     public displayName = Amex.DISPLAY_NAME;
 
-    public async getTransactions(page: puppeteer.Page): Promise<Transaction[]> {
+    public async getAccountInfo(page: puppeteer.Page): Promise<AccountInfo> {
         log.title('Fetching AMEX Transactions');
         await this.removeOldTransactionFiles();
         await this.downloadTransactions(page);
         let txns = await this.parseTransactions();
+        let balance = await this.getBalance();
         log.line('');
-        return txns;
+        return new AccountInfo(balance, txns);
     }
 
     private async removeOldTransactionFiles() {
@@ -33,7 +35,7 @@ export default class Amex implements Account {
         log.done(`rm -rf ${globName}`);
     }
 
-    private async downloadTransactions(page: puppeteer.Page) {
+    private async login(page: puppeteer.Page): Promise<void> {
         const pageUrl =
             'https://online.americanexpress.com/myca/statementimage/us/welcome.do?request_type=authreg_StatementCycles&Face=en_US';
 
@@ -58,7 +60,10 @@ export default class Amex implements Account {
             passwordSelector,
             submitSelector
         );
+    }
 
+    private async downloadTransactions(page: puppeteer.Page) {
+        await this.login(page);
         const csvSelector = 'ul.side-nav li:last-child a';
         log.start('opening csv download page');
         await Promise.all([
@@ -109,5 +114,10 @@ export default class Amex implements Account {
         txns = txns.map(t => new Transaction(t.date, t.description, t.amount));
         log.done(`loaded ${txns.length} transactions`);
         return txns;
+    }
+
+    private async getBalance(): Promise<number> {
+        //TODO: implelent this
+        return 0;
     }
 }

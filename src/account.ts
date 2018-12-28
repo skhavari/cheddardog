@@ -1,4 +1,4 @@
-import Transaction from './transaction';
+import AccountInfo from './accountinfo';
 import puppeteer from 'puppeteer';
 
 /**
@@ -11,8 +11,8 @@ export default interface Account {
     displayName: string;
 
     /**
-     * Fetches recent transactions for this account
+     * Fetches recent balance and transactions for this account
      * @param page A puppeteer page that can be used to retreive data
      */
-    getTransactions(page: puppeteer.Page): Promise<Transaction[]>;
+    getAccountInfo(page: puppeteer.Page): Promise<AccountInfo>;
 }

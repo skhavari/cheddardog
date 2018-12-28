@@ -1,23 +1,23 @@
 {
     "name": "cheddardog",
-    "version": "2.0.23",
-    "description": "fetch transactions from your financial institutions.  supports bofa (ca) and amex",
-    "main": "dist/index.mjs",
+    "version": "2.0.47",
+    "description": "fetch transactions from your financial institutions, like bofa and amex, then generate & email summary reports.",
+    "main": "dist/src/index.js",
     "scripts": {
-        "mjs": "tsc -d && npm run renamejs && npm run renamemap",
-        "cjs": "tsc -m commonjs",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node --experimental-modules --no-warnings dist/src/index.mjs",
-        "send": "node --experimental-modules --no-warnings dist/src/sendreport.mjs",
-        "build": "npm run mjs",
+        "build": "tsc -m commonjs",
         "clean": "rm -rf ./dist",
-        "renamejs": "for old in dist/src/*.js; do mv $old dist/src/`basename $old .js`.mjs; done",
-        "renamemap": "for old in dist/src/*.js.map; do mv $old dist/src/`basename $old .js.map`.mjs.map; done"
+        "clean-db": "rm -f ./txndb.json",
+        "clean-report": "rm -f ./index.html",
+        "clean-node-modules": "rm -rf node_modules",
+        "clean-all": "npm run clean && npm run clean-db && npm run clean-report && npm run clean-node-modules",
+        "start": "node dist/src/index.js",
+        "refresh": "npm run start",
+        "send": "node dist/src/sendreport.js"
     },
     "files": [
         "dist"
     ],
-    "types": "dist/index.d.ts",
+    "types": "dist/src/index.d.ts",
     "author": "Sam Khavari <skhavari@cs.stanford.edu>",
     "license": "UNLICENSED",
     "dependencies": {

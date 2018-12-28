@@ -13,7 +13,7 @@ const outputFilename = path.join('./', 'txndb.json');
     let page = await browserUtil.newPage(browser);
 
     let list = new AccountList();
-    await list.load([new Amex(), new BofA()], page);
+    await list.refreshData([new Amex(), new BofA()], page);
     list.save(outputFilename);
 
     await browserUtil.shudown(browser);

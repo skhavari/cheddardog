@@ -7,6 +7,7 @@ import path from 'path';
 import fs from 'fs';
 import csvtojson from 'csvtojson';
 import Transaction from './transaction';
+import AccountInfo from './accountinfo';
 import puppeteer from 'puppeteer';
 import { CSVParseParam } from 'csvtojson/v2/Parameters';
 
@@ -14,23 +15,24 @@ export default class BofA implements Account {
     private static DISPLAY_NAME = 'Bank of America';
     public displayName = BofA.DISPLAY_NAME;
 
-    public async getTransactions(page: puppeteer.Page): Promise<Transaction[]> {
+    public async getAccountInfo(page: puppeteer.Page): Promise<AccountInfo> {
         log.title('Fetching BofA Transactions');
         await this.removeOldTransactionFiles();
+        await this.login(page);
         await this.downloadTransactions(page);
-        let txns = await this.parseTransactions();
+        let accountInfo = await this.parseTransactions();
         log.line('');
-        return txns;
+        return accountInfo;
     }
 
-    private async removeOldTransactionFiles() {
+    private async removeOldTransactionFiles(): Promise<void> {
         const globName = path.join(getDownloadDir(), 'stmt*.csv');
         log.start(`rm -rf ${globName}`);
         shell.rm('-rf', globName);
         log.done(`rm -rf ${globName}`);
     }
 
-    private async downloadTransactions(page: puppeteer.Page) {
+    private async login(page: puppeteer.Page): Promise<void> {
         const pageUrl = 'https://www.bankofamerica.com';
 
         const usernameSelector = '#onlineId1';
@@ -55,7 +57,9 @@ export default class BofA implements Account {
             passwordSelector,
             submitSelector
         );
+    }
 
+    private async downloadTransactions(page: puppeteer.Page): Promise<void> {
         log.start('navigating to account page');
         await Promise.all([
             await page.click('span.AccountName a'),
@@ -103,11 +107,20 @@ export default class BofA implements Account {
         log.done('download complete');
     }
 
-    private async parseTransactions(): Promise<Transaction[]> {
+    private async parseTransactions(): Promise<AccountInfo> {
         log.start('reading statement');
         const filename = path.join(getDownloadDir(), 'stmt.csv');
         let fileContentsBuffer = fs.readFileSync(filename);
         let fileContents = fileContentsBuffer.toString();
+
+        let match = fileContents.match(
+            /Ending balance as of.*\"(.*)\"(\r\n|\r|\n)/
+        );
+        let balance = 0;
+        if (match !== null && match.length > 1) {
+            balance = Number(match[1]);
+        }
+
         let index = fileContents.indexOf('Date,Description,Amount,R');
         fileContents = fileContents.substring(index);
         log.done('statement loaded');
@@ -121,9 +134,12 @@ export default class BofA implements Account {
             },
             ignoreColumns: /balance/
         };
-        let txns = await csvtojson(csvConfig).fromString(fileContents);
-        txns = txns.map(t => new Transaction(t.date, t.description, t.amount));
+        let temp = await csvtojson(csvConfig).fromString(fileContents);
+        let txns = temp.map(
+            t => new Transaction(t.date, t.description, t.amount)
+        );
         log.done(`loaded ${txns.length} transactions`);
-        return txns;
+
+        return new AccountInfo(balance, txns);
     }
 }
