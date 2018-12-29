@@ -1,7 +1,7 @@
-import Account from './account';
-import { BrowserUtil, log, sleep, getDownloadDir } from '../util';
-import Transaction from './transaction';
-import Ledger from './ledger';
+import Account from '../account';
+import { BrowserUtil, log, sleep, getDownloadDir } from '../../util';
+import Transaction from '../transaction';
+import Ledger from '../ledger';
 import puppeteer from 'puppeteer';
 import path from 'path';
 import shell from 'shelljs';

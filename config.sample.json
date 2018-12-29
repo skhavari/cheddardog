@@ -1,0 +1,15 @@
+{
+    "$schema": "./config.schema.json",
+    "refresh": {
+        "accounts": [
+            "American Express",
+            "Bank of America",
+            "Schwab",
+            "Vanguard"
+        ]
+    },
+    "send": {
+        "from": "someone@somewhere.com",
+        "to": ["someone@somewhere.com", "otherperson@somewhere.com"]
+    }
+}

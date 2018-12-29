@@ -1,0 +1,85 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "cheddardog.config.schema",
+    "type": "object",
+    "title": "cheddardog configuration schmea",
+    "required": ["refresh", "send"],
+    "properties": {
+        "refresh": {
+            "$id": "#/properties/refresh",
+            "type": "object",
+            "title": "Refresh Configuration",
+            "description": "Cheddardog uses this refresh configuration to determine which accounts to refresh.",
+            "required": ["accounts"],
+            "properties": {
+                "accounts": {
+                    "$id": "#/properties/refresh/properties/accounts",
+                    "type": "array",
+                    "title": "Account List",
+                    "description": "The account list defines which accounts to refresh.",
+                    "default": [
+                        "American Express",
+                        "Bank of America",
+                        "Schwab",
+                        "Vanguard"
+                    ],
+                    "uniqueItems": true,
+                    "items": {
+                        "$id": "#/properties/refresh/properties/accounts/items",
+                        "type": "string",
+                        "title": "Account display name",
+                        "description": "The display name of one of the supported accounts.",
+                        "enum": [
+                            "American Express",
+                            "Bank of America",
+                            "Schwab",
+                            "Vanguard"
+                        ]
+                    }
+                }
+            }
+        },
+        "send": {
+            "$id": "#/properties/send",
+            "type": "object",
+            "title": "Send Configuration",
+            "description": "Cheddardog uses this send configuration to determine what to send to who",
+            "required": ["from", "to"],
+            "properties": {
+                "from": {
+                    "$id": "#/properties/send/from",
+                    "type": "string",
+                    "title": "From email address",
+                    "description": "Who the report email comes from.",
+                    "format": "email"
+                },
+                "to": {
+                    "$id": "#/properties/send/to",
+                    "anyOf": [
+                        {
+                            "$id": "#/properties/send/to/singleRecipient",
+                            "type": "string",
+                            "title": "Recipient",
+                            "description": "Email address of the one mailbox that will receive the report.",
+                            "format": "email"
+                        },
+                        {
+                            "$id": "#/properties/send/to/multiRecipients",
+                            "type": "array",
+                            "title": "Recipient list",
+                            "description": "List of email addresses that will receive the report.",
+                            "uniqueItems": true,
+                            "items": {
+                                "$id": "#/properties/send/to/multiRecipients/items",
+                                "type": "string",
+                                "title": "Recipient",
+                                "description": "Email address of the one mailbox that will receive the report.",
+                                "format": "email"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

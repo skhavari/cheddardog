@@ -6,6 +6,7 @@ import sendgrid from '@sendgrid/mail';
 import { log } from './util';
 import render from './report/render';
 import shell from 'shelljs';
+import config from './config';
 
 const filename = path.join('./out/', 'txndb.json');
 
@@ -103,16 +104,9 @@ shell.mkdir('-p', './out');
 fs.writeFileSync(ofilename, fileHtml);
 log.done(`report saved to ${ofilename}`);
 
-if (!process.env.SEND_TO || !process.env.SEND_FROM) {
-    throw new Error('missing SEND_TO and/or SEND_FROM');
-}
-
-let to = process.env.SEND_TO.split(' ');
-let from = process.env.SEND_FROM;
-
 const msg = {
-    to,
-    from,
+    to: config.send.to,
+    from: config.send.from,
     subject,
     html: emailHtml,
     attachments: [
@@ -132,6 +126,6 @@ if (!process.env.SENDGRID_API_KEY) {
 
 sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 
-log.start(`sending report email to ${to}`);
+log.start(`sending report email to ${config.send.to}`);
 (async () => await sendgrid.send(msg))();
-log.done(`email report sent to ${to}`);
+log.done(`email report sent to ${config.send.to}`);

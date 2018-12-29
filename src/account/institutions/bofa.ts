@@ -1,11 +1,11 @@
-import Account from './account';
-import { BrowserUtil, log, sleep, getDownloadDir } from '../util';
+import Account from '../account';
+import { BrowserUtil, log, sleep, getDownloadDir } from '../../util';
 import shell from 'shelljs';
 import path from 'path';
 import fs from 'fs';
 import csvtojson from 'csvtojson';
-import Transaction from './transaction';
-import Ledger from './ledger';
+import Transaction from '../transaction';
+import Ledger from '../ledger';
 import puppeteer from 'puppeteer';
 import { CSVParseParam } from 'csvtojson/v2/Parameters';
 

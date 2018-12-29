@@ -19,3 +19,6 @@ dist
 
 # output files
 out/
+
+# local config file
+config.json
