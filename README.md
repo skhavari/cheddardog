@@ -23,7 +23,7 @@
 
 ### Download Ledger from Financial Institutions
 
-> credemtials come from env vars, config is in `config.json`
+> credentials come from env vars, config is in `config.json`
 
 -   update `config.json` with which accounts you want refreshed.
 -   Set `BOFA_USER` and `BOFA_PW` env variable and/or
@@ -57,7 +57,7 @@ cheddardog() {
 
 -   Set `SENDGRID_API_KEY` env variable
 -   update `config.json` with the email sender (`from`) and receipients (`to`)
--   `npm run send` to generate `./out/index.html` and have it emailed to SEND_TO
+-   `npm run send` to generate `./out/index.html` and have it emailed
 
 ### Known issues
 
