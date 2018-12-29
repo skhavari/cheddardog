@@ -1,6 +1,11 @@
 import { Account, Ledger, Transaction, AccountRegistry } from '../account';
 import { log } from '../util';
+import path from 'path';
 import fs from 'fs';
+import shell from 'shelljs';
+
+// make sure the output dir exists
+shell.mkdir('-p', './out');
 
 // TODO: move serialization into each class via toJSON / fromJSON
 const reviver = (
@@ -44,19 +49,21 @@ const reviver = (
     return value;
 };
 
+const dbFilename = path.join('./out/', 'txndb.json');
+
 export default class Store {
-    static load(filename: string): Map<Account, Ledger> {
-        let jsonStr = fs.readFileSync(filename, { encoding: 'utf-8' });
+    static load(): Map<Account, Ledger> {
+        let jsonStr = fs.readFileSync(dbFilename, { encoding: 'utf-8' });
         let data = new Map(JSON.parse(jsonStr, reviver));
         return data as Map<Account, Ledger>;
     }
 
-    static save(data: Map<Account, Ledger>, filename: string) {
+    static save(data: Map<Account, Ledger>) {
         log.title('Exporting account list');
-        log.start(`saving account data to ${filename}`);
+        log.start(`saving account data to ${dbFilename}`);
         let stringMap = JSON.stringify([...data]);
-        fs.writeFileSync(filename, stringMap);
-        log.done(`account data save to ${filename}`);
+        fs.writeFileSync(dbFilename, stringMap);
+        log.done(`account data save to ${dbFilename}`);
         log.line('');
     }
 }
