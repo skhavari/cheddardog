@@ -18,6 +18,7 @@
 
 -   Bank of America (CA)
 -   American Express
+-   Fidelity
 -   Charles Schwab
 -   Vanguard
 -   2 Factor Auth: works, but you'll have to babysit the run and enter the 2nd factor manually

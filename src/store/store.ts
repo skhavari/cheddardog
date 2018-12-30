@@ -50,12 +50,22 @@ const reviver = (
 };
 
 const dbFilename = path.join('./out/', 'txndb.json');
+const mergeFilename = path.join('./out/', 'txndb.merged.json');
 
 export default class Store {
     static load(): Map<Account, Ledger> {
         let jsonStr = fs.readFileSync(dbFilename, { encoding: 'utf-8' });
         let data = new Map(JSON.parse(jsonStr, reviver));
         return data as Map<Account, Ledger>;
+    }
+
+    // updates the store with entries in data.  leaves the rest of the store in tact
+    // this retains existing account data when a single account is refreshed.
+    // the single account that was refreshed may lose transactions
+    static update(data: Map<Account, Ledger>) {
+        let curr = Store.load();
+        data.forEach((ledger, account) => curr.set(account, ledger));
+        Store.save(curr);
     }
 
     static save(data: Map<Account, Ledger>) {

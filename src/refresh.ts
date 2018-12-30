@@ -19,7 +19,7 @@ log.done(
 (async () => {
     log.line('');
     let data = await Refresher.refresh(refreshAccounts);
-    Store.save(data);
+    Store.update(data);
 })().catch(e => {
     log.line('');
     log.line(`❌ Error: ${e.message}`);

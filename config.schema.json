@@ -32,6 +32,7 @@
                         "enum": [
                             "American Express",
                             "Bank of America",
+                            "Fidelity",
                             "Schwab",
                             "Vanguard"
                         ]
