@@ -1,12 +1,13 @@
 import Account from './account';
-import { Vanguard, Schwab, Amex, BofA, Fidelity } from './institutions';
+import { Vanguard, Schwab, Amex, BofA, Fidelity, Etrade } from './institutions';
 
 let registry: Account[] = [
     new Amex(),
     new BofA(),
-    new Vanguard(),
+    new Etrade(),
+    new Fidelity(),
     new Schwab(),
-    new Fidelity()
+    new Vanguard()
 ];
 
 let nameToAccount = registry.reduce((prev, curr) => {

@@ -16,10 +16,11 @@
 
 ### Supports
 
--   Bank of America (CA)
 -   American Express
+-   Bank of America (CA)
+-   Etrade
 -   Fidelity
--   Charles Schwab
+-   Schwab
 -   Vanguard
 -   2 Factor Auth: works, but you'll have to babysit the run and enter the 2nd factor manually
 
