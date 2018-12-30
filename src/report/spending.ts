@@ -1,4 +1,3 @@
-import fs from 'fs';
 import {
     Transaction,
     Account,
@@ -6,36 +5,22 @@ import {
     getAllTransactions,
     getTransactionSinceDaysAgo
 } from '../account';
-import { minify } from 'html-minifier';
-import { base64Heart, ReportType } from './shared';
+import { ReportType } from './shared';
 import { USDNumberFormatter } from '../util';
+import renderTemplate from './template';
 
-interface SpendingReportParams {
-    outputType: ReportType;
-    subject: string;
-    summary: SpendSummary[];
-    transactions: Transaction[];
-}
-
-const CSS_FILENAME = './static/report/spendingreport.css';
-const css = fs.readFileSync(CSS_FILENAME).toString();
-
-const head = (subject: string) => {
-    return `
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>${subject}</title>
-        <style>${css}</style>`;
-};
+const scssFilename = './static/report/spending.scss';
 
 const summaryTable = (summary: SpendSummary[]) => {
     return summary
         .map(item => {
+            const color = item.total > 0 ? 'good' : 'warning';
             return `
             <table class="summary" align="center">
                 <tr><td class="title">${item.name}</td></tr>
-                <tr><td class="total">${item.total}</td></tr>
+                <tr><td class="total ${color}">${USDNumberFormatter.format(
+                item.total
+            )}</td></tr>
                 <tr><td class="count">${item.count} transactions</td></tr>
             </table>`;
         })
@@ -76,42 +61,25 @@ const transactionTable = (transactions: Transaction[]): string => {
     </table>`;
 };
 
-const body = (
-    summary: SpendSummary[],
-    transactions: Transaction[],
-    heartSrc: string
-) => {
-    return `
-    <table width="100%" height="100%" class="page-container">
-    <tr><td>
-        <h2>Spending Summary</h2>
-        <table align="center">
-            <tr><td>${summaryTable(summary)}</td></tr>
-            <tr><td>${transactionTable(transactions)}</td></tr>
-            <tr><td class="footer top-space">Made with <img height="10px" src="${heartSrc}" /> by your hubby.</tr></td>
-            <tr><td class="footer bottom-space">${new Date().toLocaleString()}</td></tr>
-        </table>
-    </td></tr></table>`;
+const body = (summary: SpendSummary[], transactions: Transaction[]) => {
+    return `<table align="center" width="100%">
+        <tr><td>${summaryTable(summary)}</td></tr>
+        <tr><td>${transactionTable(transactions)}</td></tr>
+    </table>`;
 };
 
-const renderSpendingReport = ({
-    outputType,
-    subject,
-    summary,
-    transactions
-}: SpendingReportParams): string => {
-    let heartSrc =
-        outputType === ReportType.Email
-            ? 'cid:lovecid'
-            : `data:image/png;base64,${base64Heart}`;
-
-    return minify(
-        `<!DOCTYPE html>
-        <html lang="en">
-            <head>${head(subject)}</head>
-            <body>${body(summary, transactions, heartSrc)}</body>
-        </html>`,
-        { collapseWhitespace: true, minifyCSS: true }
+const renderSpendingReport = (
+    outputType: ReportType,
+    subject: string,
+    summary: SpendSummary[],
+    transactions: Transaction[]
+): string => {
+    return renderTemplate(
+        subject,
+        'Spending Report',
+        body(summary, transactions),
+        scssFilename,
+        outputType
     );
 };
 
@@ -125,23 +93,13 @@ export default class SpendingReport {
         let transactions = getTransactionSinceDaysAgo(allTxns, 7);
         let summary = SpendingReport.getSpendSummaries(allTxns);
 
-        const webPageReportParams: SpendingReportParams = {
-            outputType: ReportType.WebPage,
+        return renderTemplate(
             subject,
-            summary,
-            transactions
-        };
-        const emailReportParams: SpendingReportParams = {
-            outputType: ReportType.Email,
-            subject,
-            summary,
-            transactions
-        };
-
-        if (type === ReportType.WebPage) {
-            return renderSpendingReport(webPageReportParams);
-        }
-        return renderSpendingReport(emailReportParams);
+            'Spending Report',
+            body(summary, transactions),
+            scssFilename,
+            type
+        );
     }
 
     private static getSpendSummaries(txns: Transaction[]): SpendSummary[] {
@@ -159,15 +117,13 @@ export default class SpendingReport {
         // compute the summary for each daysAgo block
         tuples.forEach(([name, filtered]) => {
             let total = filtered.reduce((sum, txn) => {
-                return sum + txn.amount;
+                let amount = txn.amount > 0 ? 0 : txn.amount;
+                return sum + amount;
             }, 0);
 
-            name = `${name} day${name === '1' ? '' : 's'}`;
-            total = Math.abs(total);
-
             spendSummary.push({
-                name,
-                total: USDNumberFormatter.format(total),
+                name: `${name} day${name === '1' ? '' : 's'}`,
+                total,
                 count: filtered.length
             });
         });

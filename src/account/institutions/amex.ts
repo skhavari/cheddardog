@@ -128,6 +128,7 @@ export default class Amex implements Account {
         let balanceStr = await page.$eval(elSelector, el => el.textContent);
         balanceStr = balanceStr || '';
         let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));
+        balance = balance * -1;
         log.done('balance loaded');
 
         return balance;

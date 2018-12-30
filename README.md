@@ -5,6 +5,7 @@
 -   Download transactions from your financial institutions
 -   Save them in a json file
 -   Generate an html spending summary report
+-   Generate an html balance report for all accounts
 -   Email the spending summary
 -   Why?
     -   Financial insights without spraying your data to third parties.

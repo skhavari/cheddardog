@@ -1,0 +1,18 @@
+@import 'common';
+
+.balance-summary {
+    line-height: 3rem;
+    min-width: 300px;
+}
+.account {
+    padding-left: 10px;
+}
+
+.balance {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.account-row {
+    background-color: rgba(255, 255, 255, 0.1);
+}

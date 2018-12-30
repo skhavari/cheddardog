@@ -1,27 +1,10 @@
-html,
-body {
-    font-family: 'Verdana';
-    background-color: #1b3a4a;
-    color: white;
-    padding: 0;
-    margin: 0;
-}
-.page-container {
-    font-family: 'Verdana';
-    background-color: #1b3a4a;
-    color: white;
-    padding: 0;
-    margin: 0;
-}
-h2 {
-    text-align: center;
-}
+@import 'common';
+
 .summary {
     text-align: center;
     width: 100%;
     padding: 0;
     border-spacing: 0;
-    margin-top: 30px;
 }
 .title {
     margin-top: 30px;
@@ -31,15 +14,14 @@ h2 {
 }
 .total {
     text-align: center;
-    color: #f05151;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: $almost-transparent;
     font-size: xx-large;
     padding: 25px;
 }
 .count {
     padding: 5px;
     text-align: right;
-    color: #4ea9de;
+    color: $light-blue;
     font-size: small;
 }
 .transactions {
@@ -56,7 +38,7 @@ h2 {
     padding-bottom: 10px;
 }
 .transaction {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: $almost-transparent;
     color: rgba(255, 255, 255, 0.5);
 }
 .transactions .transaction td {
@@ -74,28 +56,4 @@ h2 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-.footer {
-    font-size: small;
-    color: rgba(255, 255, 255, 0.1);
-    text-align: center;
-}
-.top-space {
-    padding-top: 100px;
-}
-.bottom-space {
-    padding-bottom: 100px;
-}
-.baller {
-    color: #f05151;
-    font-weight: bold;
-}
-.warning {
-    color: #f05151;
-}
-.danger {
-    color: #f77f00;
-}
-.good {
-    color: #25b16a;
 }

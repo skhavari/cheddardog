@@ -1,0 +1,57 @@
+/** common colors **/
+$dark-blue: #1b3a4a;
+$light-blue: #4ea9de;
+$red: #f05151;
+$orange: #f77f00;
+$green: #25b16a;
+$almost-transparent: rgba(255, 255, 255, 0.1);
+
+html,
+body {
+    font-family: 'Verdana';
+    background-color: $dark-blue;
+    color: white;
+    padding: 0;
+    margin: 0;
+}
+
+.page-container {
+    font-family: 'Verdana';
+    background-color: $dark-blue;
+    color: white;
+    padding: 0;
+    margin: 0;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.footer {
+    font-size: small;
+    color: $almost-transparent;
+    text-align: center;
+}
+
+.top-space {
+    padding-top: 100px;
+}
+
+.bottom-space {
+    padding-bottom: 100px;
+}
+
+.baller {
+    color: $red;
+    font-weight: bold;
+}
+.warning {
+    color: $red;
+}
+.danger {
+    color: $orange;
+}
+.good {
+    color: $green;
+}

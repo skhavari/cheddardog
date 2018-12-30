@@ -1,4 +1,9 @@
-import { SpendingReport, ReportType, base64Heart } from './report';
+import {
+    SpendingReport,
+    BalanceReport,
+    ReportType,
+    base64Heart
+} from './report';
 import { Account, Ledger } from './account';
 import { Store } from './store';
 import { log, localNowAsDateStr } from './util';
@@ -7,45 +12,68 @@ import config from './config';
 import shell from 'shelljs';
 import fs from 'fs';
 
+const heartAttachment = {
+    filename: 'heart.png',
+    type: 'image/png',
+    content: base64Heart,
+    content_id: 'lovecid',
+    disposition: 'inline'
+};
+const attachments = [heartAttachment];
+
 if (!process.env.SENDGRID_API_KEY) {
     throw new Error('missing SENDGRID_API_KEY');
 }
 sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
+shell.mkdir('-p', './out');
 
-log.title('Sending latest report');
+const saveReport = (filename: string, contents: string) => {
+    log.start(`saving report to ${filename}`);
+    fs.writeFileSync(filename, contents);
+    log.done(`report saved to ${filename}`);
+};
 
+const sendReport = (
+    to: string | string[],
+    from: string,
+    subject: string,
+    html: string
+) => {
+    const msg = {
+        to,
+        from,
+        subject,
+        html,
+        attachments
+    };
+
+    log.start(`sending report email to ${msg.to}`);
+    (async () => await sendgrid.send(msg))();
+    log.done(`email report sent to ${msg.to}`);
+};
+
+//  Init
+log.title('Report Initialization');
 log.start(`loading all transactions`);
 let data: Map<Account, Ledger> = Store.load();
 log.done(`all transactions loaded`);
 
-log.start('rendering report');
-const subject = `Spending Report ${localNowAsDateStr()}`;
-const webRender = SpendingReport.render(data, ReportType.WebPage, subject);
-const emailRender = SpendingReport.render(data, ReportType.Email, subject);
-log.done('report rendered');
+//  Spending Report
+log.title('Spending Report');
+log.start('rendering spending report');
+let subject = `Spending Report ${localNowAsDateStr()}`;
+let webRender = SpendingReport.render(data, ReportType.WebPage, subject);
+let emailRender = SpendingReport.render(data, ReportType.Email, subject);
+log.done('spending report rendered');
+saveReport('./out/spending.html', webRender);
+sendReport(config.send.to, config.send.from, subject, emailRender);
 
-const ofilename = './out/index.html';
-log.start(`saving report to ${ofilename}`);
-shell.mkdir('-p', './out');
-fs.writeFileSync(ofilename, webRender);
-log.done(`report saved to ${ofilename}`);
-
-const msg = {
-    to: config.send.to,
-    from: config.send.from,
-    subject,
-    html: emailRender,
-    attachments: [
-        {
-            filename: 'heart.png',
-            type: 'image/png',
-            content: base64Heart,
-            content_id: 'lovecid',
-            disposition: 'inline'
-        }
-    ]
-};
-
-log.start(`sending report email to ${config.send.to}`);
-(async () => await sendgrid.send(msg))();
-log.done(`email report sent to ${config.send.to}`);
+//  Balance Report
+log.title('Balance Report');
+log.start('rendering balance report');
+subject = `Balance Report ${localNowAsDateStr()}`;
+webRender = BalanceReport.render(data, ReportType.WebPage, subject);
+emailRender = BalanceReport.render(data, ReportType.Email, subject);
+log.done('balance report rendered');
+saveReport('./out/balance.html', webRender);
+sendReport(config.send.to, config.send.from, subject, emailRender);
