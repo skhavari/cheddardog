@@ -63,7 +63,8 @@ export default class Etrade implements Account {
 
     async getBalance(page: Page): Promise<number> {
         log.start('extracting balance');
-        let elSelector = 'div.accountTotalsContainer td.text-right';
+        let elSelector =
+            '.text-right.accountvalues-data.accountvalues-data-header.ng-binding';
         let balanceStr = await page.$eval(elSelector, el => el.textContent);
         balanceStr = balanceStr || '';
         let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));

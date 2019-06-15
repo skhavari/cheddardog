@@ -1,5 +1,11 @@
 import Account from '../account';
-import { BrowserUtil, log, sleep, getDownloadDir } from '../../util';
+import {
+    BrowserUtil,
+    log,
+    sleep,
+    getDownloadDir,
+    moDayYearWithLeadingZeros
+} from '../../util';
 import shell from 'shelljs';
 import path from 'path';
 import fs from 'fs';
@@ -55,6 +61,13 @@ export default class BofA implements Account {
             passwordSelector,
             submitSelector
         );
+
+        let url = await page.url();
+        while (url.includes('login')) {
+            log.start('oops, login didnt compelte, check the page');
+            await page.waitForNavigation({ waitUntil: 'networkidle2' });
+            log.done('login really done');
+        }
     }
 
     private async downloadTransactions(page: puppeteer.Page): Promise<void> {
@@ -85,9 +98,9 @@ export default class BofA implements Account {
         const endSelector = 'input#end-date';
 
         let d = new Date();
-        let end = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+        let end = moDayYearWithLeadingZeros(d);
         d.setMonth(d.getMonth() - 2);
-        let start = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+        let start = moDayYearWithLeadingZeros(d);
 
         log.start(`configuring custom date range ${start} to ${end}`);
         await page.click('input#cust-date');

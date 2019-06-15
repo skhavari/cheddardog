@@ -39,3 +39,14 @@ export const localNowAsDateStr = (): string => {
     const now = new Date(Date.now() - tzoffset);
     return now.toISOString().split('T')[0];
 };
+
+const addLeadingZero = (n: number): string => {
+    return `${n < 10 ? '0' : ''}${n}`;
+};
+
+export const moDayYearWithLeadingZeros = (d: Date): string => {
+    let mo = addLeadingZero(d.getMonth() + 1);
+    let day = addLeadingZero(d.getDate());
+    let year = d.getFullYear();
+    return `${mo}/${day}/${year}`;
+};

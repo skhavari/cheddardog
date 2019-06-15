@@ -47,9 +47,13 @@
 }
 .date {
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .amount {
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: right;
 }
 .description {

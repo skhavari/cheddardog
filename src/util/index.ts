@@ -6,5 +6,6 @@ export {
     DateRange,
     rangeFromDaysAgo,
     USDNumberFormatter,
-    localNowAsDateStr
+    localNowAsDateStr,
+    moDayYearWithLeadingZeros
 } from './utils';
