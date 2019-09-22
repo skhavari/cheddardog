@@ -29,8 +29,3 @@ export default class Refresher {
         return {data, errors};
     }
 }
-
-
-// <div class="nb-account-header--value-value" id="portfolioBalAndShares">
-//               $270,981.64*<sup class="dcfootnotes"></sup>
-//           </div>

@@ -32,14 +32,17 @@ export default class Fidelity implements Account {
             );
         }
 
-        await BrowserUtil.simpleLogin(
+        const waitForSelector = 'div#portfolioBalAndShares';
+
+        await BrowserUtil.simpleLoginWithSelector(
             page,
             pageUrl,
             username,
             password,
             usernameSelector,
             passwordSelector,
-            submitSelector
+            submitSelector,
+            waitForSelector
         );
     }
 
