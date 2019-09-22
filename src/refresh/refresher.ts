@@ -1,16 +1,36 @@
 import { Account, Ledger } from '../account';
-import { BrowserUtil } from '../util';
+import { BrowserUtil, log } from '../util';
+
+export type RefreshResults = {
+    data: Map<Account, Ledger>,
+    errors: Map<Account, any>
+}
 
 export default class Refresher {
-    static async refresh(accounts: Account[]): Promise<Map<Account, Ledger>> {
+    static async refresh(accounts: Account[]): Promise<RefreshResults> {
         let browser = await BrowserUtil.newBrowser();
         let page = await BrowserUtil.newPage(browser);
+        
         let data = new Map<Account, Ledger>();
+        let errors = new Map<Account, any>();
+        
         for (var account of accounts) {
-            data.set(account, await account.getLedger(page));
+            try {
+                let ledger = await account.getLedger(page);
+                data.set(account, ledger);
+            }
+            catch(e) {
+                errors.set(account, e);
+                
+            }
         }
 
         await browser.close();
-        return data;
+        return {data, errors};
     }
 }
+
+
+// <div class="nb-account-header--value-value" id="portfolioBalAndShares">
+//               $270,981.64*<sup class="dcfootnotes"></sup>
+//           </div>

@@ -38,7 +38,7 @@ export default class Log {
     }
 
     static start(msg: string) {
-        Log.line(`     ⏳ ${msg}`);
+        Log.line(`      ⏳ ${msg}`);
     }
 
     static done(msg: string) {

@@ -69,6 +69,7 @@ export default class Store {
     }
 
     static save(data: Map<Account, Ledger>) {
+        log.line('');
         log.title('Exporting account list');
         log.start(`saving account data to ${dbFilename}`);
         let stringMap = JSON.stringify([...data]);
