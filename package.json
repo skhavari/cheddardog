@@ -16,18 +16,19 @@
     "author": "Sam Khavari <skhavari@cs.stanford.edu>",
     "license": "UNLICENSED",
     "dependencies": {
-        "@sendgrid/mail": "6.3.1",
+        "@sendgrid/mail": "^6.4.0",
         "@types/csvtojson": "1.1.5",
-        "@types/html-minifier": "3.5.2",
-        "@types/node": "10.12.18",
-        "@types/node-sass": "3.10.32",
-        "@types/puppeteer": "1.11.1",
-        "@types/shelljs": "0.8.1",
+        "@types/html-minifier": "^3.5.3",
+        "@types/node": "^12.0.8",
+        "@types/node-sass": "^4.11.0",
+        "@types/puppeteer": "^1.12.4",
+        "@types/shelljs": "^0.8.5",
         "csvtojson": "2.0.8",
         "get-cursor-position": "1.0.5",
-        "html-minifier": "3.5.21",
-        "node-sass": "4.11.0",
-        "puppeteer": "1.11.0",
-        "shelljs": "0.8.3"
+        "html-minifier": "^4.0.0",
+        "node-sass": "^4.12.0",
+        "puppeteer": "1.17.0",
+        "shelljs": "0.8.3",
+        "typescript": "^3.5.2"
     }
 }

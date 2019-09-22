@@ -47,6 +47,35 @@ export default class BrowserUtil {
         passwordSelector: string,
         submitSelector: string
     ): Promise<void> {
+        await BrowserUtil.simpleLoginInternal(page, url, username, password, usernameSelector, passwordSelector, submitSelector);
+        await page.waitForNavigation({ waitUntil: 'networkidle2' })
+        log.done('signed in');
+    }
+
+    static async simpleLoginWithSelector(
+        page: puppeteer.Page,
+        url: string,
+        username: string,
+        password: string,
+        usernameSelector: string,
+        passwordSelector: string,
+        submitSelector: string,
+        waitForSelector: string
+    ): Promise<void> {
+        await BrowserUtil.simpleLoginInternal(page, url, username, password, usernameSelector, passwordSelector, submitSelector);
+        await page.waitForSelector(waitForSelector);
+        log.done('signed in');
+    }
+
+    private static async simpleLoginInternal(
+        page: puppeteer.Page,
+        url: string,
+        username: string,
+        password: string,
+        usernameSelector: string,
+        passwordSelector: string,
+        submitSelector: string
+    ): Promise<void> {
         log.start(`opening ${url}`);
         await page.goto(url, { waitUntil: 'networkidle2' });
         log.done(`${url} loaded`);
@@ -62,11 +91,7 @@ export default class BrowserUtil {
         log.done('password entered');
 
         log.start('signing in');
-        await Promise.all([
-            await page.click(submitSelector, { delay: 100 }),
-            await page.waitForNavigation({ waitUntil: 'networkidle2' })
-        ]);
-        log.done('signed in');
+        await page.click(submitSelector, { delay: 100 });
     }
 
     static async shudown(browser: puppeteer.Browser) {

@@ -49,14 +49,17 @@ export default class Amex implements Account {
             );
         }
 
-        await BrowserUtil.simpleLogin(
+        const waitSelector = 'a#displayYear_20180';
+
+        await BrowserUtil.simpleLoginWithSelector(
             page,
             pageUrl,
             username,
             password,
             usernameSelector,
             passwordSelector,
-            submitSelector
+            submitSelector,
+            waitSelector
         );
     }
 
@@ -66,7 +69,7 @@ export default class Amex implements Account {
         log.start('opening csv download page');
         await Promise.all([
             await page.click(csvSelector, { delay: 100 }),
-            await page.waitForNavigation({ waitUntil: 'networkidle2' })
+            await page.waitForSelector('button#downloadFormButton')
         ]);
         log.done('csv download page opened');
 
@@ -124,7 +127,7 @@ export default class Amex implements Account {
         log.done('dashboard loaded');
 
         log.start('extracting balance');
-        let elSelector = 'div.line-item div.data-value div.heading-5';
+        let elSelector = '[data-locator-id="total_balance_title_value"]';
         let balanceStr = await page.$eval(elSelector, el => el.textContent);
         balanceStr = balanceStr || '';
         let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));
