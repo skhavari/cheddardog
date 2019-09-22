@@ -10,7 +10,8 @@
         "clean-node-modules": "rm -rf node_modules",
         "clean-all": "npm run clean && npm run clean-data && npm run clean-node-modules",
         "refresh": "node dist/src/refresh.js",
-        "send": "node dist/src/send.js"
+        "send": "node dist/src/send.js",
+        "html": "CHEDDARDOG_SAVEONLY=1 node dist/src/send.js"
     },
     "types": "dist/src/index.d.ts",
     "author": "Sam Khavari <skhavari@cs.stanford.edu>",

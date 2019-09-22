@@ -21,6 +21,8 @@ const heartAttachment = {
 };
 const attachments = [heartAttachment];
 
+let saveOnly = process.env.CHEDDARDOG_SAVEONLY;
+
 if (!process.env.SENDGRID_API_KEY) {
     throw new Error('missing SENDGRID_API_KEY');
 }
@@ -66,7 +68,10 @@ let webRender = SpendingReport.render(data, ReportType.WebPage, subject);
 let emailRender = SpendingReport.render(data, ReportType.Email, subject);
 log.done('spending report rendered');
 saveReport('./out/spending.html', webRender);
-sendReport(config.send.to, config.send.from, subject, emailRender);
+if( !saveOnly ){
+    sendReport(config.send.to, config.send.from, subject, emailRender);
+}
+
 
 //  Balance Report
 log.title('Balance Report');
@@ -76,4 +81,6 @@ webRender = BalanceReport.render(data, ReportType.WebPage, subject);
 emailRender = BalanceReport.render(data, ReportType.Email, subject);
 log.done('balance report rendered');
 saveReport('./out/balance.html', webRender);
-sendReport(config.send.to, config.send.from, subject, emailRender);
+if( !saveOnly ){
+    sendReport(config.send.to, config.send.from, subject, emailRender);
+}
