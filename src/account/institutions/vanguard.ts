@@ -45,7 +45,7 @@ export default class Vanguard implements Account {
 
     async getBalance(page: Page): Promise<number> {
         log.start('extracting balance');
-        let elSelector = 'div.totalRow div.value';
+        let elSelector = '#sncPortfolioBalance';
         let balanceStr = await page.$eval(elSelector, el => el.textContent);
         balanceStr = balanceStr || '';
         let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));
