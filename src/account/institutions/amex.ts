@@ -30,7 +30,7 @@ export default class Amex implements Account {
         const globName = path.join(getDownloadDir(), 'ofx*.csv');
         log.start(`rm -rf ${globName}`);
         shell.rm('-rf', globName);
-        log.done(`rm -rf ${globName}`);
+        log.succeed(`rm -rf ${globName}`);
     }
 
     private async login(page: puppeteer.Page): Promise<void> {
@@ -71,27 +71,22 @@ export default class Amex implements Account {
             await page.click(csvSelector, { delay: 100 }),
             await page.waitForSelector('button#downloadFormButton')
         ]);
-        log.done('csv download page opened');
+        log.succeed('csv download page opened');
 
-        const latestCheckboxSelector =
-            'ul#download-list-0.stmtsList div:first-child li:first-child span';
-        const oneBackCheckboxSelector =
-            'ul#download-list-0.stmtsList div:first-child li:nth-child(2) span';
+        const latestCheckboxSelector = 'ul#download-list-0.stmtsList div:first-child li:first-child span';
+        const oneBackCheckboxSelector = 'ul#download-list-0.stmtsList div:first-child li:nth-child(2) span';
 
         log.start('selecting date ranges');
         await Promise.all([
             await page.click(latestCheckboxSelector, { delay: 100 }),
             await page.click(oneBackCheckboxSelector, { delay: 100 })
         ]);
-        log.done('date ranges selected');
+        log.succeed('date ranges selected');
 
         const downloadButtonSelector = 'button#downloadFormButton';
         log.start('downloading transactions');
-        await Promise.all([
-            await page.click(downloadButtonSelector, { delay: 100 }),
-            await sleep(5000)
-        ]);
-        log.done('transactions downloaded');
+        await Promise.all([await page.click(downloadButtonSelector, { delay: 100 }), await sleep(5000)]);
+        log.succeed('transactions downloaded');
     }
 
     private async parseTransactions(): Promise<Transaction[]> {
@@ -99,7 +94,7 @@ export default class Amex implements Account {
         const filename = path.join(getDownloadDir(), 'ofx.csv');
         let fileContentsBuffer = fs.readFileSync(filename);
         let fileContents = fileContentsBuffer.toString();
-        log.done('statement loaded');
+        log.succeed('statement loaded');
 
         log.start('parsing transactions');
         const csvConfig: Partial<CSVParseParam> = {
@@ -113,18 +108,15 @@ export default class Amex implements Account {
         };
         let txns = await csvtojson(csvConfig).fromString(fileContents);
         txns = txns.map(t => new Transaction(t.date, t.description, t.amount));
-        log.done(`loaded ${txns.length} transactions`);
+        log.succeed(`loaded ${txns.length} transactions`);
         return txns;
     }
 
     private async getBalance(page: puppeteer.Page): Promise<number> {
         let homeSelector = 'ul#iNavMenu li:first-child a';
         log.start('navigating to dashboard');
-        await Promise.all([
-            await page.click(homeSelector, { delay: 0 }),
-            await sleep(5000)
-        ]);
-        log.done('dashboard loaded');
+        await Promise.all([await page.click(homeSelector, { delay: 0 }), await sleep(5000)]);
+        log.succeed('dashboard loaded');
 
         log.start('extracting balance');
         let elSelector = '[data-locator-id="total_balance_title_value"]';
@@ -132,7 +124,7 @@ export default class Amex implements Account {
         balanceStr = balanceStr || '';
         let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));
         balance = balance * -1;
-        log.done('balance loaded');
+        log.succeed('balance loaded');
 
         return balance;
     }

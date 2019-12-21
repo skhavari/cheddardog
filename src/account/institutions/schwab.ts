@@ -52,7 +52,7 @@ export default class Schwab implements Account {
         let balanceStr = await page.$eval(elSelector, el => el.textContent);
         balanceStr = balanceStr || '';
         let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));
-        log.done('balance loaded');
+        log.succeed('balance loaded');
         return balance;
     }
 
@@ -61,6 +61,6 @@ export default class Schwab implements Account {
         while (!page.url().startsWith('https://client.schwab.com/')) {
             await page.waitForNavigation({ waitUntil: 'networkidle2' });
         }
-        log.done('2FA done, thanks!');
+        log.succeed('2FA done, thanks!');
     }
 }

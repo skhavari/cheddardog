@@ -8,7 +8,7 @@ log.title('Refresh configuration');
 log.start('reading refresh configuration');
 let accountNames = config.refresh.accounts;
 let refreshAccounts = accountNames.map(name => AccountRegistry.newAccountFromName(name));
-log.done(`refresh configuration read.  Will refresh ${refreshAccounts.length} accounts`);
+log.succeed(`refresh configuration read.  Will refresh ${refreshAccounts.length} accounts`);
 
 (async () => {
     log.line('');
@@ -27,5 +27,8 @@ function printErrors(errors: Map<Account, any>): void {
         return;
     }
     log.title(`Failed to refresh ${errors.size} accounts`);
-    errors.forEach((error, account) => log.line(`      Failed to refresh ${account.displayName}: ${error}`));
+    errors.forEach((error, account) => {
+        log.start('');
+        log.fail(`Failed to refresh ${account.displayName}: ${error}`);
+    });
 }

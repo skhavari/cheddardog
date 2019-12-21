@@ -8,10 +8,7 @@ import shell from 'shelljs';
 shell.mkdir('-p', './out');
 
 // TODO: move serialization into each class via toJSON / fromJSON
-const reviver = (
-    key: string,
-    value: any
-): string | Date | Transaction | Ledger | Account => {
+const reviver = (key: string, value: any): string | Date | Transaction | Ledger | Account => {
     // make dates Dates
     if (typeof value === 'string' && key == '_date') {
         return new Date(value);
@@ -28,21 +25,12 @@ const reviver = (
         return new Transaction(_date, _description, _amount);
     }
 
-    if (
-        value &&
-        typeof value === 'object' &&
-        Reflect.has(value, 'balance') &&
-        Reflect.has(value, 'transactions')
-    ) {
+    if (value && typeof value === 'object' && Reflect.has(value, 'balance') && Reflect.has(value, 'transactions')) {
         let { balance, transactions } = value;
         return new Ledger(balance, transactions);
     }
 
-    if (
-        value &&
-        typeof value === 'object' &&
-        Reflect.has(value, 'displayName')
-    ) {
+    if (value && typeof value === 'object' && Reflect.has(value, 'displayName')) {
         return AccountRegistry.newAccountFromName(value.displayName);
     }
 
@@ -74,7 +62,7 @@ export default class Store {
         log.start(`saving account data to ${dbFilename}`);
         let stringMap = JSON.stringify([...data]);
         fs.writeFileSync(dbFilename, stringMap);
-        log.done(`account data save to ${dbFilename}`);
+        log.succeed(`account data save to ${dbFilename}`);
         log.line('');
     }
 }

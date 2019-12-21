@@ -1,11 +1,5 @@
 import Account from '../account';
-import {
-    BrowserUtil,
-    log,
-    sleep,
-    getDownloadDir,
-    moDayYearWithLeadingZeros
-} from '../../util';
+import { BrowserUtil, log, sleep, getDownloadDir, moDayYearWithLeadingZeros } from '../../util';
 import shell from 'shelljs';
 import path from 'path';
 import fs from 'fs';
@@ -33,7 +27,7 @@ export default class BofA implements Account {
         const globName = path.join(getDownloadDir(), 'stmt*.csv');
         log.start(`rm -rf ${globName}`);
         shell.rm('-rf', globName);
-        log.done(`rm -rf ${globName}`);
+        log.succeed(`rm -rf ${globName}`);
     }
 
     private async login(page: puppeteer.Page): Promise<void> {
@@ -66,7 +60,7 @@ export default class BofA implements Account {
         while (url.includes('login')) {
             log.start('oops, login didnt compelte, check the page');
             await page.waitForNavigation({ waitUntil: 'networkidle2' });
-            log.done('login really done');
+            log.succeed('login really done');
         }
     }
 
@@ -79,7 +73,7 @@ export default class BofA implements Account {
             }),
             await sleep(1000)
         ]);
-        log.done('account page loaded');
+        log.succeed('account page loaded');
 
         log.start('opening download form');
         await Promise.all([
@@ -88,11 +82,11 @@ export default class BofA implements Account {
                 visible: true
             })
         ]);
-        log.done('download form opened');
+        log.succeed('download form opened');
 
         log.start('selecting download file type');
         await page.select('#select_filetype', 'csv');
-        log.done('file type selected');
+        log.succeed('file type selected');
 
         const startSelector = 'input#start-date';
         const endSelector = 'input#end-date';
@@ -111,11 +105,11 @@ export default class BofA implements Account {
         await page.focus(endSelector);
         await sleep(2000);
         await page.type(endSelector, end, { delay: 20 });
-        log.done(`custom date range ${start} to ${end} configured`);
+        log.succeed(`custom date range ${start} to ${end} configured`);
 
         log.start('downloading transactions');
         Promise.all([await page.click('a.submit-download'), await sleep(2000)]);
-        log.done('download complete');
+        log.succeed('download complete');
     }
 
     private async parseTransactions(): Promise<Ledger> {
@@ -124,9 +118,7 @@ export default class BofA implements Account {
         let fileContentsBuffer = fs.readFileSync(filename);
         let fileContents = fileContentsBuffer.toString();
 
-        let match = fileContents.match(
-            /Ending balance as of.*\"(.*)\"(\r\n|\r|\n)/
-        );
+        let match = fileContents.match(/Ending balance as of.*\"(.*)\"(\r\n|\r|\n)/);
         let balance = 0;
         if (match !== null && match.length > 1) {
             balance = Number(match[1]);
@@ -134,7 +126,7 @@ export default class BofA implements Account {
 
         let index = fileContents.indexOf('Date,Description,Amount,R');
         fileContents = fileContents.substring(index);
-        log.done('statement loaded');
+        log.succeed('statement loaded');
 
         log.start('parsing transactions');
         const csvConfig: Partial<CSVParseParam> = {
@@ -146,10 +138,8 @@ export default class BofA implements Account {
             ignoreColumns: /balance/
         };
         let temp = await csvtojson(csvConfig).fromString(fileContents);
-        let txns = temp.map(
-            t => new Transaction(t.date, t.description, t.amount)
-        );
-        log.done(`loaded ${txns.length} transactions`);
+        let txns = temp.map(t => new Transaction(t.date, t.description, t.amount));
+        log.succeed(`loaded ${txns.length} transactions`);
 
         return new Ledger(balance, txns);
     }

@@ -1,9 +1,4 @@
-import {
-    SpendingReport,
-    BalanceReport,
-    ReportType,
-    base64Heart
-} from './report';
+import { SpendingReport, BalanceReport, ReportType, base64Heart } from './report';
 import { Account, Ledger } from './account';
 import { Store } from './store';
 import { log, localNowAsDateStr } from './util';
@@ -32,15 +27,10 @@ shell.mkdir('-p', './out');
 const saveReport = (filename: string, contents: string) => {
     log.start(`saving report to ${filename}`);
     fs.writeFileSync(filename, contents);
-    log.done(`report saved to ${filename}`);
+    log.succeed(`report saved to ${filename}`);
 };
 
-const sendReport = (
-    to: string | string[],
-    from: string,
-    subject: string,
-    html: string
-) => {
+const sendReport = (to: string | string[], from: string, subject: string, html: string) => {
     const msg = {
         to,
         from,
@@ -51,14 +41,14 @@ const sendReport = (
 
     log.start(`sending report email to ${msg.to}`);
     (async () => await sendgrid.send(msg))();
-    log.done(`email report sent to ${msg.to}`);
+    log.succeed(`email report sent to ${msg.to}`);
 };
 
 //  Init
 log.title('Report Initialization');
 log.start(`loading all transactions`);
 let data: Map<Account, Ledger> = Store.load();
-log.done(`all transactions loaded`);
+log.succeed(`all transactions loaded`);
 
 //  Spending Report
 log.title('Spending Report');
@@ -66,12 +56,11 @@ log.start('rendering spending report');
 let subject = `Spending Report ${localNowAsDateStr()}`;
 let webRender = SpendingReport.render(data, ReportType.WebPage, subject);
 let emailRender = SpendingReport.render(data, ReportType.Email, subject);
-log.done('spending report rendered');
+log.succeed('spending report rendered');
 saveReport('./out/spending.html', webRender);
-if( !saveOnly ){
+if (!saveOnly) {
     sendReport(config.send.to, config.send.from, subject, emailRender);
 }
-
 
 //  Balance Report
 log.title('Balance Report');
@@ -79,8 +68,8 @@ log.start('rendering balance report');
 subject = `Balance Report ${localNowAsDateStr()}`;
 webRender = BalanceReport.render(data, ReportType.WebPage, subject);
 emailRender = BalanceReport.render(data, ReportType.Email, subject);
-log.done('balance report rendered');
+log.succeed('balance report rendered');
 saveReport('./out/balance.html', webRender);
-if( !saveOnly ){
+if (!saveOnly) {
     sendReport(config.send.to, config.send.from, subject, emailRender);
 }

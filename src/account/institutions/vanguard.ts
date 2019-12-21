@@ -49,7 +49,7 @@ export default class Vanguard implements Account {
         let balanceStr = await page.$eval(elSelector, el => el.textContent);
         balanceStr = balanceStr || '';
         let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));
-        log.done('balance loaded');
+        log.succeed('balance loaded');
         return balance;
     }
 
@@ -59,7 +59,7 @@ export default class Vanguard implements Account {
             // will wait for user to do 2fa, then continue
             log.start('Hurry, enter your 2FA credentials');
             await page.waitForNavigation({ waitUntil: 'networkidle2' });
-            log.done('2FA done, thanks!');
+            log.succeed('2FA done, thanks!');
         }
     }
 }

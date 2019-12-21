@@ -15,14 +15,14 @@ export default class BrowserUtil {
         log.title(`Starting ${packageInfo.name} v${packageInfo.version}`);
         log.start('launching browser');
         let browser = await puppeteer.launch(launchParams);
-        log.done('browser launched');
+        log.succeed('browser launched');
         return browser;
     }
 
     static async newPage(browser: puppeteer.Browser): Promise<puppeteer.Page> {
         log.start('creating new page');
         let page = await browser.newPage();
-        log.done('page created');
+        log.succeed('page created');
         log.line('');
         return page;
     }
@@ -47,9 +47,17 @@ export default class BrowserUtil {
         passwordSelector: string,
         submitSelector: string
     ): Promise<void> {
-        await BrowserUtil.simpleLoginInternal(page, url, username, password, usernameSelector, passwordSelector, submitSelector);
-        await page.waitForNavigation({ waitUntil: 'networkidle2' })
-        log.done('signed in');
+        let logger = await BrowserUtil.simpleLoginInternal(
+            page,
+            url,
+            username,
+            password,
+            usernameSelector,
+            passwordSelector,
+            submitSelector
+        );
+        await page.waitForNavigation({ waitUntil: 'networkidle2' });
+        log.succeed('signed in');
     }
 
     static async simpleLoginWithSelector(
@@ -62,9 +70,17 @@ export default class BrowserUtil {
         submitSelector: string,
         waitForSelector: string
     ): Promise<void> {
-        await BrowserUtil.simpleLoginInternal(page, url, username, password, usernameSelector, passwordSelector, submitSelector);
+        let logger = await BrowserUtil.simpleLoginInternal(
+            page,
+            url,
+            username,
+            password,
+            usernameSelector,
+            passwordSelector,
+            submitSelector
+        );
         await page.waitForSelector(waitForSelector);
-        log.done('signed in');
+        log.succeed('signed in');
     }
 
     private static async simpleLoginInternal(
@@ -78,17 +94,17 @@ export default class BrowserUtil {
     ): Promise<void> {
         log.start(`opening ${url}`);
         await page.goto(url, { waitUntil: 'networkidle2' });
-        log.done(`${url} loaded`);
+        log.succeed(`${url} loaded`);
 
         log.start('entinering username');
         await page.focus(usernameSelector);
         await page.type(usernameSelector, username, { delay: 20 });
-        log.done('username entered');
+        log.succeed('username entered');
 
         log.start('entering password');
         await page.focus(passwordSelector);
         await page.type(passwordSelector, password, { delay: 20 });
-        log.done('password entered');
+        log.succeed('password entered');
 
         log.start('signing in');
         await page.click(submitSelector, { delay: 100 });
@@ -98,7 +114,7 @@ export default class BrowserUtil {
         log.title(`Shutting down ${packageInfo.name} v${packageInfo.version}`);
         log.start('closing browser');
         await browser.close();
-        log.done('browser closed');
+        log.succeed('browser closed');
         log.line('');
     }
 }

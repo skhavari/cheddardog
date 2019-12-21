@@ -50,25 +50,16 @@ export default class Etrade implements Account {
 
         let pw = `${password}${await this.getVipToken(page)}`;
 
-        await BrowserUtil.simpleLogin(
-            page,
-            pageUrl,
-            username,
-            pw,
-            usernameSelector,
-            passwordSelector,
-            submitSelector
-        );
+        await BrowserUtil.simpleLogin(page, pageUrl, username, pw, usernameSelector, passwordSelector, submitSelector);
     }
 
     async getBalance(page: Page): Promise<number> {
         log.start('extracting balance');
-        let elSelector =
-            '.text-right.accountvalues-data.accountvalues-data-header.ng-binding';
+        let elSelector = '.text-right.accountvalues-data.accountvalues-data-header.ng-binding';
         let balanceStr = await page.$eval(elSelector, el => el.textContent);
         balanceStr = balanceStr || '';
         let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));
-        log.done('balance loaded');
+        log.succeed('balance loaded');
         return balance;
     }
 

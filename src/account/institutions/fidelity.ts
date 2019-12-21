@@ -16,8 +16,7 @@ export default class Fidelity implements Account {
     }
 
     private async login(page: Page): Promise<void> {
-        const pageUrl =
-            'https://login.fidelity.com/ftgw/Fas/Fidelity/NBPart/Login/Init/df.chf.ra/';
+        const pageUrl = 'https://login.fidelity.com/ftgw/Fas/Fidelity/NBPart/Login/Init/df.chf.ra/';
 
         const usernameSelector = 'input#userId';
         const passwordSelector = 'input#password';
@@ -52,7 +51,7 @@ export default class Fidelity implements Account {
         let balanceStr = await page.$eval(elSelector, el => el.textContent);
         balanceStr = balanceStr || '';
         let balance = Number(balanceStr.replace(/[^0-9.-]+/g, ''));
-        log.done('balance loaded');
+        log.succeed('balance loaded');
         return balance;
     }
 }
