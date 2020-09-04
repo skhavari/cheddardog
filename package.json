@@ -27,7 +27,7 @@
         "@types/shelljs": "^0.8.6",
         "csvtojson": "2.0.10",
         "html-minifier": "^4.0.0",
-        "node-sass": "^4.13.0",
+        "node-sass": "^4.13.1",
         "ora": "^4.0.3",
         "puppeteer": "^2.0.0",
         "shelljs": "0.8.3",
